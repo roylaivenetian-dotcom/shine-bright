@@ -162,22 +162,17 @@
     let historyData = {};
 
     // Get fresh Hong Kong date
-    function getHKToday() {
+    function getHKDate() {
         const now = new Date();
-        const hkDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
-        const todayStr = hkDate.toISOString().split('T')[0];
-        return { hkDate, todayStr };
+        return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
     }
 
-    // Cloud functions
     async function loadFromCloud() {
         try {
             const res = await fetch(`${WORKER_URL}/api/load`);
             if (res.ok) {
                 const json = await res.json();
-                if (json.success && json.historyData) {
-                    historyData = json.historyData;
-                }
+                if (json.success && json.historyData) historyData = json.historyData;
             }
         } catch (e) {}
         if (Object.keys(historyData).length === 0) {
@@ -190,14 +185,15 @@
             await fetch(`${WORKER_URL}/api/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ historyData: historyData })
+                body: JSON.stringify({ historyData })
             });
         } catch (e) {}
     }
 
     function init() {
-        const { hkDate, todayStr } = getHKToday();
-        const day = hkDate.getDay();   // 0 = Sunday
+        const d = getHKDate();
+        const todayStr = d.toISOString().split('T')[0];
+        const day = d.getDay();
 
         let mode = 'sunday';
         if (day === 1 || day === 4) mode = 'mon_thu';
@@ -206,21 +202,24 @@
         else if (day === 5) mode = 'friday';
         else if (day === 6) mode = 'saturday';
 
-        // Mark today's tab
-        const todayBtn = document.getElementById('btn-' + mode);
-        if (todayBtn) todayBtn.innerText = todayBtn.innerText.replace(" (今)", "") + " (今)";
-
+        // Update top date
         document.getElementById('dateText').innerText = 
-            hkDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+            d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+        // Mark today's tab
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.innerText = btn.innerText.replace(" (今)", "");
+            if (btn.id === 'btn-' + mode) btn.innerText += " (今)";
+        });
 
         const isLocked = (historyData[todayStr] !== undefined);
 
-        renderTasks(mode, isLocked, todayStr);
-        renderCalendar(hkDate, todayStr);
-        updateMonthCount(hkDate);
+        renderTasks(mode, isLocked);
+        renderCalendar(d, todayStr);
+        updateMonthCount(d);
     }
 
-    function renderTasks(mode, isLocked, todayStr) {
+    function renderTasks(mode, isLocked) {
         currentMode = mode;
         const listEl = document.getElementById('taskList');
         listEl.innerHTML = "";
@@ -243,13 +242,13 @@
             listEl.appendChild(div);
         });
 
-        const btn = document.getElementById('genBtn');
+        const genBtn = document.getElementById('genBtn');
         if (isLocked) {
-            btn.disabled = true;
-            btn.innerText = "✅ 今日報告已封存";
+            genBtn.disabled = true;
+            genBtn.innerText = "✅ 今日報告已封存";
         } else {
-            btn.disabled = false;
-            btn.innerText = "💫 生成今日星光報告";
+            genBtn.disabled = false;
+            genBtn.innerText = "💫 生成今日星光報告";
         }
 
         calc();
@@ -263,43 +262,44 @@
         checkboxes.forEach((cb, i) => { if (cb.checked) score += weights[i] || 0; });
 
         document.getElementById('num').innerText = score + '%';
-        const bar = document.getElementById('bar');
-        bar.style.width = Math.min(score, 100) + '%';
+        document.getElementById('bar').style.width = Math.min(score, 100) + '%';
 
         const pBox = document.getElementById('pBox');
         if (score >= 100) {
             pBox.classList.add('complete');
-            bar.classList.add('complete');
+            document.getElementById('bar').classList.add('complete');
             document.getElementById('msg').innerText = "完美達成！今天妳是最耀眼的女孩！💖";
         } else {
             pBox.classList.remove('complete');
-            bar.classList.remove('complete');
+            document.getElementById('bar').classList.remove('complete');
             document.getElementById('msg').innerText = score >= 80 ? "妳正在閃閃發光唷！✨" : "讓星光再亮一點點吧 🌙";
         }
     }
 
     async function gen() {
         if (!confirm("確定生成報告嗎？生成後今日將鎖定。")) return;
-        const { todayStr } = getHKToday();
+        const d = getHKDate();
+        const todayStr = d.toISOString().split('T')[0];
         const score = parseInt(document.getElementById('num').innerText);
+
         historyData[todayStr] = score;
         localStorage.setItem('shineHistory', JSON.stringify(historyData));
         await saveToCloud();
-
         init();   // Refresh everything
     }
 
     function parentUnlock() {
         if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
-            const { todayStr } = getHKToday();
-            delete historyData[todayStr];   // Allow reset
+            const d = getHKDate();
+            const todayStr = d.toISOString().split('T')[0];
+            delete historyData[todayStr];   // Clear today's lock
             localStorage.setItem('shineHistory', JSON.stringify(historyData));
             init();
-            alert("已解除鎖定，可以重新勾選。");
+            alert("今日已重置，可以重新勾選！");
         }
     }
 
-    function renderCalendar(hkDate, todayStr) {
+    function renderCalendar(d, todayStr) {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = "";
         ['日','一','二','三','四','五','六'].forEach(l => {
@@ -309,35 +309,34 @@
             grid.appendChild(el);
         });
 
-        const firstDay = new Date(hkDate.getFullYear(), hkDate.getMonth(), 1).getDay();
-        const daysInMonth = new Date(hkDate.getFullYear(), hkDate.getMonth() + 1, 0).getDate();
+        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
+        const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 
         for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
 
-        for (let day = 1; day <= daysInMonth; day++) {
+        for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
             const cell = document.createElement('div');
             cell.className = 'cal-cell active';
-            const dateKey = `${hkDate.getFullYear()}-${String(hkDate.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-            
+            const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+
             if (dateKey === todayStr) cell.classList.add('today');
 
             const score = historyData[dateKey];
             if (score !== undefined) {
-                const percentHtml = `<span class="cal-percent">${score}%</span>`;
-                cell.innerHTML = `<span>${day}</span>${percentHtml}`;
+                cell.innerHTML = `<span>${dayNum}</span><span class="cal-percent">${score}%</span>`;
                 if (score >= 100) cell.classList.add('lv-high');
                 else if (score >= 80) cell.classList.add('lv-mid');
                 else cell.classList.add('lv-low');
             } else {
-                cell.innerHTML = `<span>${day}</span>`;
+                cell.innerHTML = `<span>${dayNum}</span>`;
             }
             grid.appendChild(cell);
         }
     }
 
-    function updateMonthCount(hkDate) {
-        const year = hkDate.getFullYear();
-        const month = hkDate.getMonth() + 1;
+    function updateMonthCount(d) {
+        const year = d.getFullYear();
+        const month = d.getMonth() + 1;
         let count = 0;
         for (const key in historyData) {
             const [y, m] = key.split('-').map(Number);
@@ -346,7 +345,7 @@
         document.getElementById('monthCount').innerText = count;
     }
 
-    // Start
+    // Start the app
     async function startApp() {
         await loadFromCloud();
         init();
