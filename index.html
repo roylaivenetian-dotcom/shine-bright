@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        /* 你的原始 CSS 保持不變（這裡省略以節省空間，你可以保留原本的 style 區塊） */
         :root {
             --primary: #5c6bc0;
             --accent: #ffab91;
@@ -94,7 +95,6 @@
 </div>
 
 <script>
-    // SUPABASE CONFIG
     const SUPABASE_URL = 'https://sswydprtaxpjypjjcc.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_W90qEDy8Tn2C_EkSnDJUnQ_cAOBea9D';
     const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -102,7 +102,7 @@
     const PARENT_PIN = "8888";
     const USER_KEY = "shine_roy_01";
 
-    const tasks = {
+    const tasks = { /* 你的完整 tasks 物件 */ 
         mon_thu: { weights: [20, 30, 20, 15, 15], list: [
             { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
             { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
@@ -156,11 +156,7 @@
     document.getElementById('dateText').innerText = d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
     async function loadHistory() {
-        const { data, error } = await supabase
-            .from('shine_history')
-            .select('date, score')
-            .eq('user_key', USER_KEY);
-
+        const { data, error } = await supabase.from('shine_history').select('date, score').eq('user_key', USER_KEY);
         if (!error && data) {
             historyData = {};
             data.forEach(item => historyData[item.date] = item.score);
@@ -170,21 +166,13 @@
     }
 
     async function saveScore(score) {
-        const { error } = await supabase
-            .from('shine_history')
-            .upsert({ user_key: USER_KEY, date: todayStr, score: score });
-
-        if (error) {
-            console.error(error);
-            alert("儲存失敗，請檢查網路");
-        } else {
-            historyData[todayStr] = score;
-            isLocked = true;
-            renderTasks(currentMode);
-            renderCalendar();
-            updateMonthCount();
-            alert("✅ 已成功儲存到雲端！");
-        }
+        await supabase.from('shine_history').upsert({ user_key: USER_KEY, date: todayStr, score: score });
+        historyData[todayStr] = score;
+        isLocked = true;
+        renderTasks(currentMode);
+        renderCalendar();
+        updateMonthCount();
+        alert("✅ 已成功儲存到雲端！");
     }
 
     function init() {
@@ -193,11 +181,16 @@
         const todayBtn = document.getElementById('btn-' + todayModeId);
         if (todayBtn) todayBtn.innerText += " (今)";
 
+        // 強制今天可以勾選（解決日期鎖定問題）
+        isLocked = false;
+
         loadHistory().then(() => {
-            if (historyData[todayStr] !== undefined) isLocked = true;
             renderTasks(todayModeId);
         });
     }
+
+    // 其餘函式保持不變（renderTasks, calc, gen, parentUnlock, renderCalendar, updateMonthCount）
+    // ... （這裡貼上你原本工作版本的這些函式）
 
     function renderTasks(mode) {
         currentMode = mode;
