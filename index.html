@@ -7,26 +7,7 @@
     <title>Shine Bright ✨ 少女星光養成計劃</title>
   
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
-  
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/manifest+json,{
-      &quot;name&quot;:&quot;Shine Bright ✨&quot;,
-      &quot;short_name&quot;:&quot;Shine Bright&quot;,
-      &quot;start_url&quot;:&quot;.&quot;,
-      &quot;display&quot;:&quot;standalone&quot;,
-      &quot;background_color&quot;:&quot;#fffdf9&quot;,
-      &quot;theme_color&quot;:&quot;#5c6bc0&quot;,
-      &quot;orientation&quot;:&quot;portrait&quot;,
-      &quot;icons&quot;:[{
-        &quot;src&quot;:&quot;https://via.placeholder.com/192x192/5c6bc0/ffffff?text=✨&quot;,
-        &quot;sizes&quot;:&quot;192x192&quot;,
-        &quot;type&quot;:&quot;image/png&quot;
-      },{
-        &quot;src&quot;:&quot;https://via.placeholder.com/512x512/5c6bc0/ffffff?text=✨&quot;,
-        &quot;sizes&quot;:&quot;512x512&quot;,
-        &quot;type&quot;:&quot;image/png&quot;
-      }]
-    }">
+
     <style>
         :root {
             --primary: #5c6bc0;
@@ -34,7 +15,6 @@
             --bg: #fffdf9;
             --danger: #e91e63;
             --success: #4caf50;
-            --warning: #fbc02d;
             --font-cute: 'Ma Shan Zheng', cursive, "Microsoft JhengHei";
         }
       
@@ -48,34 +28,27 @@
         h2 { text-align: center; color: var(--primary); font-family: var(--font-cute); font-size: 2.2em; margin-bottom: 5px; }
         .date-display { text-align: center; font-size: 1.1em; color: var(--accent); margin-bottom: 20px; font-weight: bold; }
       
-        .admin-controls {
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px;
-            background: #f9f9f9; padding: 10px; border-radius: 20px;
-        }
-      
-        .tab-btn {
-            padding: 6px 10px; font-size: 0.75em; border: none; border-radius: 12px;
-            cursor: pointer; background: white; color: #999; transition: 0.3s; font-family: var(--font-cute);
-        }
+        .admin-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px; background: #f9f9f9; padding: 10px; border-radius: 20px; }
+        .tab-btn { padding: 6px 10px; font-size: 0.75em; border: none; border-radius: 12px; cursor: pointer; background: white; color: #999; transition: 0.3s; font-family: var(--font-cute); }
         .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3); }
+        
         .task-item { display: flex; align-items: flex-start; padding: 12px 5px; border-bottom: 1px dashed #eee; }
-        .task-item input { width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+        .task-item input { width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; accent-color: var(--accent); }
         .task-item input:disabled { cursor: not-allowed; opacity: 0.6; }
       
         .info-pill { min-width: 105px; margin-right: 12px; }
         .time-range { background: #e8eaf6; color: var(--primary); padding: 3px 6px; border-radius: 8px; font-size: 0.8em; font-weight: bold; display: block; text-align: center; }
         .task-text { font-size: 1em; line-height: 1.4; flex-grow: 1; }
-        .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; font-weight: normal; }
+        .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; }
         .red-task { color: var(--danger); font-weight: bold; }
         .family-task { color: #5d4037; font-weight: bold; }
       
-        .progress-box { margin-top: 25px; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 20px; transition: 0.3s; }
+        .progress-box { margin-top: 25px; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 20px; }
         .progress-box.complete { background: #e8f5e9; }
         .bar-bg { background: #eee; border-radius: 50px; height: 14px; margin: 15px 0; overflow: hidden; }
         #bar { background: linear-gradient(90deg, #5c6bc0, #8e99f3); height: 100%; width: 0%; transition: 0.8s ease; }
         #bar.complete { background: linear-gradient(90deg, #4caf50, #8bc34a); }
         #msg { font-family: var(--font-cute); font-size: 1.2em; color: var(--primary); }
-        #msg.complete { color: var(--success); }
       
         .action-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 20px; font-size: 1.3em; margin-top: 20px; cursor: pointer; font-family: var(--font-cute); }
         .parent-unlock { text-align: right; margin-top: 10px; font-size: 0.8em; color: #bbb; text-decoration: underline; cursor: pointer; }
@@ -87,19 +60,16 @@
         .cal-cell {
             aspect-ratio: 1; border-radius: 12px; background: #f9f9f9; font-size: 0.75em;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #ccc; border: 2px solid transparent; transition: 0.3s;
+            color: #ccc; border: 2px solid transparent;
         }
         .cal-cell.active { color: #444; background: #fff; border: 1px solid #eee; }
         .cal-cell .cal-percent { font-size: 0.7em; margin-top: 2px; font-weight: bold; }
-      
-        .cal-cell.lv-high { background: #c8e6c9 !important; color: #2e7d32; border-color: #a5d6a7; }
-        .cal-cell.lv-mid { background: #fff9c4 !important; color: #f57f17; border-color: #fff176; }
+        .cal-cell.lv-high { background: #c8e6c9 !important; color: #2e7d32; }
+        .cal-cell.lv-mid { background: #fff9c4 !important; color: #f57f17; }
         .cal-cell.lv-low { background: #f5f5f5 !important; color: #d32f2f; border: 2px solid var(--danger) !important; }
-      
         .cal-cell.today { background: #e8eaf6; border: 2px solid var(--primary) !important; font-weight: bold; }
       
         .award-note { margin-top: 15px; padding: 15px; background: #fffde7; border-radius: 20px; font-size: 0.9em; color: #795548; line-height: 1.5; border: 2px dashed #fff59d; text-align: center; }
-        .award-main { color: var(--danger); font-weight: bold; font-size: 1.1em; display: block; margin-bottom: 5px; }
         .counter-box { display: inline-block; background: white; padding: 5px 15px; border-radius: 10px; margin-top: 8px; border: 1px solid #eee; }
         .counter-num { color: var(--primary); font-size: 1.2em; font-weight: bold; }
     </style>
@@ -108,7 +78,8 @@
 <div class="container">
     <h2>Shine Bright ✨</h2>
     <div class="date-display" id="dateText"></div>
-    <div class="admin-controls" id="modeTabs">
+    
+    <div class="admin-controls">
         <button class="tab-btn" id="btn-mon_thu" onclick="renderTasks('mon_thu')">週一/四</button>
         <button class="tab-btn" id="btn-tue" onclick="renderTasks('tue')">週二</button>
         <button class="tab-btn" id="btn-wed" onclick="renderTasks('wed')">週三(數研)</button>
@@ -116,14 +87,18 @@
         <button class="tab-btn" id="btn-saturday" onclick="renderTasks('saturday')">週六</button>
         <button class="tab-btn" id="btn-sunday" onclick="renderTasks('sunday')">週日</button>
     </div>
+
     <div id="taskList"></div>
     <div class="parent-unlock" onclick="parentUnlock()">家長管理權限</div>
+
     <div class="progress-box" id="pBox">
         <b>今日星光達成率：<span id="num">0%</span></b>
         <div class="bar-bg"><div id="bar"></div></div>
         <div id="msg">讓星光閃耀吧 🌙</div>
     </div>
+
     <button class="action-btn" id="genBtn" onclick="gen()">💫 生成今日星光報告</button>
+
     <div class="calendar-section">
         <div class="calendar-title">星光成就日曆 📅</div>
         <div class="calendar-grid" id="calendarGrid"></div>
@@ -138,7 +113,7 @@
     const PARENT_PIN = "8888";
     const WORKER_URL = "https://shine-bright-api.roy-lai-venetian.workers.dev";
 
-    const tasks = {
+    const tasks = { /* ... same as before, no change ... */
         mon_thu: { weights: [20, 30, 20, 15, 15], list: [
             { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
             { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
@@ -187,7 +162,7 @@
     let isLocked = false;
     let historyData = {};
 
-    // Use Hong Kong time for accurate date
+    // Hong Kong time
     const now = new Date();
     const d = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
     const todayStr = d.toISOString().split('T')[0];
@@ -195,55 +170,48 @@
     document.getElementById('dateText').innerText = 
         d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
-    // ==================== CLOUD SYNC ====================
+    // Cloud functions (unchanged)
     async function loadFromCloud() {
         try {
             const res = await fetch(`${WORKER_URL}/api/load`);
-            if (!res.ok) throw new Error("Network error");
-            const json = await res.json();
-            if (json.success && json.historyData) {
-                historyData = json.historyData;
-                localStorage.setItem('shineHistory', JSON.stringify(historyData));
-                return true;
+            if (res.ok) {
+                const json = await res.json();
+                if (json.success && json.historyData) {
+                    historyData = json.historyData;
+                    localStorage.setItem('shineHistory', JSON.stringify(historyData));
+                }
             }
-        } catch (e) {
-            console.log("Cloud load failed, using localStorage");
+        } catch (e) {}
+        if (!historyData || Object.keys(historyData).length === 0) {
+            historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
         }
-        historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
     }
 
     async function saveToCloud() {
         try {
-            const res = await fetch(`${WORKER_URL}/api/save`, {
+            await fetch(`${WORKER_URL}/api/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ historyData: historyData })
+                body: JSON.stringify({ historyData })
             });
-            const json = await res.json();
-            if (json.success) console.log("Saved to cloud");
-        } catch (e) {
-            console.log("Cloud save failed");
-        }
+        } catch (e) {}
     }
 
-    // ==================== MAIN FUNCTIONS ====================
     function init() {
         const day = d.getDay();
-        let todayModeId = "";
-        if (day === 0) todayModeId = 'sunday';
-        else if (day === 1 || day === 4) todayModeId = 'mon_thu';
-        else if (day === 2) todayModeId = 'tue';
-        else if (day === 3) todayModeId = 'wed';
-        else if (day === 5) todayModeId = 'friday';
-        else if (day === 6) todayModeId = 'saturday';
+        let mode = 'sunday';
+        if (day === 1 || day === 4) mode = 'mon_thu';
+        else if (day === 2) mode = 'tue';
+        else if (day === 3) mode = 'wed';
+        else if (day === 5) mode = 'friday';
+        else if (day === 6) mode = 'saturday';
 
-        const todayBtn = document.getElementById('btn-' + todayModeId);
+        const todayBtn = document.getElementById('btn-' + mode);
         if (todayBtn) todayBtn.innerText += " (今)";
 
-        // Determine if today is already completed
         isLocked = (historyData[todayStr] !== undefined);
 
-        renderTasks(todayModeId);
+        renderTasks(mode);
         renderCalendar();
         updateMonthCount();
     }
@@ -253,49 +221,45 @@
         const listEl = document.getElementById('taskList');
         listEl.innerHTML = "";
 
-        const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(btn => {
-            btn.classList.remove('active');
+        // Activate correct tab
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.id === 'btn-' + mode);
             btn.disabled = isLocked;
-            if (btn.id === 'btn-' + mode) btn.classList.add('active');
         });
 
-        const taskData = tasks[mode].list;
-        const weightData = tasks[mode].weights;
-
-        taskData.forEach((task, index) => {
-            const w = weightData[index] || 0;
+        const data = tasks[mode];
+        data.list.forEach((task, i) => {
+            const weight = data.weights[i];
             const div = document.createElement('div');
             div.className = 'task-item';
-            
-            // ✅ Always start unchecked on new day. Only disable when locked.
             div.innerHTML = `
                 <input type="checkbox" onchange="calc()" ${isLocked ? 'disabled' : ''}>
                 <div class="info-pill"><span class="time-range">${task.time}</span></div>
-                <span class="task-text">${task.text} <span class="weight-text">(${w}%)</span></span>
+                <span class="task-text">${task.text} <span class="weight-text">(${weight}%)</span></span>
             `;
             listEl.appendChild(div);
         });
 
-        const gBtn = document.getElementById('genBtn');
+        // Update button text
+        const btn = document.getElementById('genBtn');
         if (isLocked) {
-            gBtn.disabled = true;
-            gBtn.innerText = "✅ 今日報告已封存";
+            btn.disabled = true;
+            btn.innerText = "✅ 今日報告已封存";
         } else {
-            gBtn.disabled = false;
-            gBtn.innerText = "💫 生成今日星光報告";
+            btn.disabled = false;
+            btn.innerText = "💫 生成今日星光報告";
         }
 
-        // Reset progress to 0% when rendering (important for new days)
-        calc();
+        calc();   // Reset score to 0% on new day
     }
 
     function calc() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        if (!currentMode) return;
+        const checkboxes = document.querySelectorAll('#taskList input[type="checkbox"]');
         const weights = tasks[currentMode].weights;
         let score = 0;
-        checkboxes.forEach((b, index) => { 
-            if (b.checked) score += (weights[index] || 0); 
+        checkboxes.forEach((cb, i) => {
+            if (cb.checked) score += weights[i] || 0;
         });
 
         document.getElementById('num').innerText = score + '%';
@@ -304,35 +268,35 @@
 
         const pBox = document.getElementById('pBox');
         if (score >= 100) {
-            pBox.className = "progress-box complete";
-            bar.className = "complete";
+            pBox.classList.add('complete');
+            bar.classList.add('complete');
             document.getElementById('msg').innerText = "完美達成！今天妳是最耀眼的女孩！💖";
         } else {
-            pBox.className = "progress-box";
-            bar.className = "";
+            pBox.classList.remove('complete');
+            bar.classList.remove('complete');
             document.getElementById('msg').innerText = score >= 80 ? "妳正在閃閃發光唷！✨" : "讓星光再亮一點點吧 🌙";
         }
     }
 
     async function gen() {
-        if (confirm("確定生成報告嗎？生成後今日將鎖定。")) {
-            const score = parseInt(document.getElementById('num').innerText);
-            historyData[todayStr] = score;
-            localStorage.setItem('shineHistory', JSON.stringify(historyData));
-            await saveToCloud();
+        if (!confirm("確定生成報告嗎？生成後今日將鎖定。")) return;
 
-            isLocked = true;
-            renderTasks(currentMode);
-            renderCalendar();
-            updateMonthCount();
-        }
+        const score = parseInt(document.getElementById('num').innerText);
+        historyData[todayStr] = score;
+        localStorage.setItem('shineHistory', JSON.stringify(historyData));
+        await saveToCloud();
+
+        isLocked = true;
+        renderTasks(currentMode);
+        renderCalendar();
+        updateMonthCount();
     }
 
     function parentUnlock() {
         if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
             isLocked = false;
             renderTasks(currentMode);
-            alert("已解除鎖定。");
+            alert("已解除鎖定，可以重新勾選。");
         }
     }
 
@@ -349,39 +313,40 @@
         const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
         const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 
-        for(let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
+        for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
 
-        for(let day = 1; day <= daysInMonth; day++) {
+        for (let day = 1; day <= daysInMonth; day++) {
             const cell = document.createElement('div');
             cell.className = 'cal-cell active';
             const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-            if(dateKey === todayStr) cell.classList.add('today');
+            if (dateKey === todayStr) cell.classList.add('today');
 
             const score = historyData[dateKey];
-            let percentHtml = "";
-            if(score !== undefined) {
-                percentHtml = `<span class="cal-percent">${score}%</span>`;
-                if(score >= 100) cell.classList.add('lv-high');
-                else if(score >= 80) cell.classList.add('lv-mid');
+            if (score !== undefined) {
+                const percent = `<span class="cal-percent">${score}%</span>`;
+                cell.innerHTML = `<span>${day}</span>${percent}`;
+                if (score >= 100) cell.classList.add('lv-high');
+                else if (score >= 80) cell.classList.add('lv-mid');
                 else cell.classList.add('lv-low');
+            } else {
+                cell.innerHTML = `<span>${day}</span>`;
             }
-            cell.innerHTML = `<span>${day}</span>${percentHtml}`;
             grid.appendChild(cell);
         }
     }
 
     function updateMonthCount() {
-        const currentMonth = d.getMonth() + 1;
-        const currentYear = d.getFullYear();
+        const year = d.getFullYear();
+        const month = d.getMonth() + 1;
         let count = 0;
-        for (const dateKey in historyData) {
-            const [year, month] = dateKey.split('-').map(Number);
-            if (year === currentYear && month === currentMonth && historyData[dateKey] >= 90) count++;
+        for (const key in historyData) {
+            const [y, m] = key.split('-').map(Number);
+            if (y === year && m === month && historyData[key] >= 90) count++;
         }
         document.getElementById('monthCount').innerText = count;
     }
 
-    // Start the app
+    // Start
     async function startApp() {
         await loadFromCloud();
         init();
