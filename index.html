@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* 你的原始 CSS 保持不變（這裡省略以節省空間，你可以保留原本的 style 區塊） */
         :root {
             --primary: #5c6bc0;
             --accent: #ffab91;
@@ -102,7 +101,7 @@
     const PARENT_PIN = "8888";
     const USER_KEY = "shine_roy_01";
 
-    const tasks = { /* 你的完整 tasks 物件 */ 
+    const tasks = {
         mon_thu: { weights: [20, 30, 20, 15, 15], list: [
             { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
             { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
@@ -181,16 +180,12 @@
         const todayBtn = document.getElementById('btn-' + todayModeId);
         if (todayBtn) todayBtn.innerText += " (今)";
 
-        // 強制今天可以勾選（解決日期鎖定問題）
-        isLocked = false;
+        isLocked = false;   // 強制今天可以勾選
 
         loadHistory().then(() => {
             renderTasks(todayModeId);
         });
     }
-
-    // 其餘函式保持不變（renderTasks, calc, gen, parentUnlock, renderCalendar, updateMonthCount）
-    // ... （這裡貼上你原本工作版本的這些函式）
 
     function renderTasks(mode) {
         currentMode = mode;
