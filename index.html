@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#5c6bc0">
     <title>Shine Bright ✨ 少女星光養成計劃</title>
-  
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -17,62 +16,43 @@
             --success: #4caf50;
             --font-cute: 'Ma Shan Zheng', cursive, "Microsoft JhengHei";
         }
-      
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); padding: 15px; color: #444; margin: 0; }
-      
-        .container {
-            max-width: 480px; background: white; padding: 25px; border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05); margin: 20px auto; border: 1px solid #f0f0f0;
-        }
-      
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); padding: 15px; color: #444; }
+        .container { max-width: 480px; background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); margin: auto; border: 1px solid #f0f0f0; }
         h2 { text-align: center; color: var(--primary); font-family: var(--font-cute); font-size: 2.2em; margin-bottom: 5px; }
         .date-display { text-align: center; font-size: 1.1em; color: var(--accent); margin-bottom: 20px; font-weight: bold; }
-      
         .admin-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px; background: #f9f9f9; padding: 10px; border-radius: 20px; }
         .tab-btn { padding: 6px 10px; font-size: 0.75em; border: none; border-radius: 12px; cursor: pointer; background: white; color: #999; transition: 0.3s; font-family: var(--font-cute); }
         .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3); }
-        
         .task-item { display: flex; align-items: flex-start; padding: 12px 5px; border-bottom: 1px dashed #eee; }
-        .task-item input { width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; accent-color: var(--accent); }
+        .task-item input { width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
         .task-item input:disabled { cursor: not-allowed; opacity: 0.6; }
-      
         .info-pill { min-width: 105px; margin-right: 12px; }
         .time-range { background: #e8eaf6; color: var(--primary); padding: 3px 6px; border-radius: 8px; font-size: 0.8em; font-weight: bold; display: block; text-align: center; }
         .task-text { font-size: 1em; line-height: 1.4; flex-grow: 1; }
-        .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; }
+        .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; font-weight: normal; }
         .red-task { color: var(--danger); font-weight: bold; }
         .family-task { color: #5d4037; font-weight: bold; }
-      
         .progress-box { margin-top: 25px; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 20px; }
         .progress-box.complete { background: #e8f5e9; }
         .bar-bg { background: #eee; border-radius: 50px; height: 14px; margin: 15px 0; overflow: hidden; }
         #bar { background: linear-gradient(90deg, #5c6bc0, #8e99f3); height: 100%; width: 0%; transition: 0.8s ease; }
         #bar.complete { background: linear-gradient(90deg, #4caf50, #8bc34a); }
         #msg { font-family: var(--font-cute); font-size: 1.2em; color: var(--primary); }
-      
         .action-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 20px; font-size: 1.3em; margin-top: 20px; cursor: pointer; font-family: var(--font-cute); }
-        
-        /* Parent link is now very small and less obvious */
-        .parent-unlock { text-align: right; margin-top: 8px; font-size: 0.65em; color: #ddd; cursor: pointer; }
-      
+        .parent-unlock { text-align: right; margin-top: 10px; font-size: 0.8em; color: #bbb; text-decoration: underline; cursor: pointer; }
         .calendar-section { margin-top: 30px; border-top: 2px solid #f0f0f0; padding-top: 20px; }
         .calendar-title { font-family: var(--font-cute); font-size: 1.5em; color: var(--primary); text-align: center; margin-bottom: 10px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
         .cal-day-label { font-size: 0.7em; color: #999; font-weight: bold; padding-bottom: 5px; }
-      
-        .cal-cell {
-            aspect-ratio: 1; border-radius: 12px; background: #f9f9f9; font-size: 0.75em;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #ccc; border: 2px solid transparent;
-        }
+        .cal-cell { aspect-ratio: 1; border-radius: 12px; background: #f9f9f9; font-size: 0.75em; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #ccc; border: 2px solid transparent; transition: 0.3s; }
         .cal-cell.active { color: #444; background: #fff; border: 1px solid #eee; }
         .cal-cell .cal-percent { font-size: 0.7em; margin-top: 2px; font-weight: bold; }
-        .cal-cell.lv-high { background: #c8e6c9 !important; color: #2e7d32; }
-        .cal-cell.lv-mid { background: #fff9c4 !important; color: #f57f17; }
+        .cal-cell.lv-high { background: #c8e6c9 !important; color: #2e7d32; border-color: #a5d6a7; }
+        .cal-cell.lv-mid { background: #fff9c4 !important; color: #f57f17; border-color: #fff176; }
         .cal-cell.lv-low { background: #f5f5f5 !important; color: #d32f2f; border: 2px solid var(--danger) !important; }
         .cal-cell.today { background: #e8eaf6; border: 2px solid var(--primary) !important; font-weight: bold; }
-      
         .award-note { margin-top: 15px; padding: 15px; background: #fffde7; border-radius: 20px; font-size: 0.9em; color: #795548; line-height: 1.5; border: 2px dashed #fff59d; text-align: center; }
+        .award-main { color: var(--danger); font-weight: bold; font-size: 1.1em; display: block; margin-bottom: 5px; }
         .counter-box { display: inline-block; background: white; padding: 5px 15px; border-radius: 10px; margin-top: 8px; border: 1px solid #eee; }
         .counter-num { color: var(--primary); font-size: 1.2em; font-weight: bold; }
     </style>
@@ -82,7 +62,7 @@
     <h2>Shine Bright ✨</h2>
     <div class="date-display" id="dateText"></div>
     
-    <div class="admin-controls">
+    <div class="admin-controls" id="modeTabs">
         <button class="tab-btn" id="btn-mon_thu" onclick="renderTasks('mon_thu')">週一/四</button>
         <button class="tab-btn" id="btn-tue" onclick="renderTasks('tue')">週二</button>
         <button class="tab-btn" id="btn-wed" onclick="renderTasks('wed')">週三(數研)</button>
@@ -93,13 +73,12 @@
 
     <div id="taskList"></div>
 
-    <!-- Parent link is now very small and light color (less noticeable to child) -->
     <div class="parent-unlock" onclick="parentUnlock()">家長管理權限</div>
 
     <div class="progress-box" id="pBox">
         <b>今日星光達成率：<span id="num">0%</span></b>
         <div class="bar-bg"><div id="bar"></div></div>
-        <div id="msg">讓星光再亮一點點吧 🌙</div>
+        <div id="msg">讓星光閃耀吧 🌙</div>
     </div>
 
     <button class="action-btn" id="genBtn" onclick="gen()">💫 生成今日星光報告</button>
@@ -115,8 +94,13 @@
 </div>
 
 <script>
+    // SUPABASE CONFIG
+    const SUPABASE_URL = 'https://sswydprtaxpjypjjcc.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_W90qEDy8Tn2C_EkSnDJUnQ_cAOBea9D';
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
     const PARENT_PIN = "8888";
-    const WORKER_URL = "https://shine-bright-api.roy-lai-venetian.workers.dev";
+    const USER_KEY = "shine_roy_01";
 
     const tasks = {
         mon_thu: { weights: [20, 30, 20, 15, 15], list: [
@@ -164,146 +148,123 @@
     };
 
     let currentMode = "";
+    let isLocked = false;
     let historyData = {};
+    const d = new Date();
+    const todayStr = d.toISOString().split('T')[0];
 
-    function getHKDate() {
-        const now = new Date();
-        return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
+    document.getElementById('dateText').innerText = d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+    async function loadHistory() {
+        const { data, error } = await supabase
+            .from('shine_history')
+            .select('date, score')
+            .eq('user_key', USER_KEY);
+
+        if (!error && data) {
+            historyData = {};
+            data.forEach(item => historyData[item.date] = item.score);
+        }
+        renderCalendar();
+        updateMonthCount();
     }
 
-    async function loadFromCloud() {
-        try {
-            const res = await fetch(`${WORKER_URL}/api/load`);
-            if (res.ok) {
-                const json = await res.json();
-                if (json.success && json.historyData) historyData = json.historyData;
-            }
-        } catch (e) {}
-        if (Object.keys(historyData).length === 0) {
-            historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
+    async function saveScore(score) {
+        const { error } = await supabase
+            .from('shine_history')
+            .upsert({ user_key: USER_KEY, date: todayStr, score: score });
+
+        if (error) {
+            console.error(error);
+            alert("儲存失敗，請檢查網路");
+        } else {
+            historyData[todayStr] = score;
+            isLocked = true;
+            renderTasks(currentMode);
+            renderCalendar();
+            updateMonthCount();
+            alert("✅ 已成功儲存到雲端！");
         }
     }
 
-    async function saveToCloud() {
-        try {
-            await fetch(`${WORKER_URL}/api/save`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ historyData })
-            });
-        } catch (e) {}
-    }
-
     function init() {
-        const d = getHKDate();
-        const todayStr = d.toISOString().split('T')[0];
         const day = d.getDay();
+        let todayModeId = (day === 0) ? 'sunday' : (day === 1 || day === 4) ? 'mon_thu' : (day === 2) ? 'tue' : (day === 3) ? 'wed' : (day === 5) ? 'friday' : 'saturday';
+        const todayBtn = document.getElementById('btn-' + todayModeId);
+        if (todayBtn) todayBtn.innerText += " (今)";
 
-        let mode = 'sunday';
-        if (day === 1 || day === 4) mode = 'mon_thu';
-        else if (day === 2) mode = 'tue';
-        else if (day === 3) mode = 'wed';
-        else if (day === 5) mode = 'friday';
-        else if (day === 6) mode = 'saturday';
-
-        document.getElementById('dateText').innerText = 
-            d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-
-        // Mark today's tab
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.innerText = btn.innerText.replace(" (今)", "");
-            if (btn.id === 'btn-' + mode) btn.innerText += " (今)";
+        loadHistory().then(() => {
+            if (historyData[todayStr] !== undefined) isLocked = true;
+            renderTasks(todayModeId);
         });
-
-        const isLocked = (historyData[todayStr] !== undefined);
-
-        renderTasks(mode, isLocked);
-        renderCalendar(d, todayStr);
-        updateMonthCount(d);
     }
 
-    function renderTasks(mode, isLocked) {
+    function renderTasks(mode) {
         currentMode = mode;
         const listEl = document.getElementById('taskList');
         listEl.innerHTML = "";
 
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.id === 'btn-' + mode);
+            btn.classList.remove('active');
             btn.disabled = isLocked;
+            if (btn.id === 'btn-' + mode) btn.classList.add('active');
         });
 
-        const data = tasks[mode];
-        data.list.forEach((task, i) => {
-            const weight = data.weights[i];
+        tasks[mode].list.forEach((task, index) => {
+            const w = tasks[mode].weights[index] || 0;
             const div = document.createElement('div');
             div.className = 'task-item';
             div.innerHTML = `
                 <input type="checkbox" onchange="calc()" ${isLocked ? 'disabled' : ''}>
                 <div class="info-pill"><span class="time-range">${task.time}</span></div>
-                <span class="task-text">${task.text} <span class="weight-text">(${weight}%)</span></span>
+                <span class="task-text">${task.text} <span class="weight-text">(${w}%)</span></span>
             `;
             listEl.appendChild(div);
         });
 
-        const genBtn = document.getElementById('genBtn');
-        if (isLocked) {
-            genBtn.disabled = true;
-            genBtn.innerText = "✅ 今日報告已封存";
-        } else {
-            genBtn.disabled = false;
-            genBtn.innerText = "💫 生成今日星光報告";
-        }
-
+        const gBtn = document.getElementById('genBtn');
+        gBtn.disabled = isLocked;
+        gBtn.innerText = isLocked ? "今日報告已完成封存" : "💫 生成今日星光報告";
         calc();
     }
 
     function calc() {
-        if (!currentMode) return;
-        const checkboxes = document.querySelectorAll('#taskList input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const weights = tasks[currentMode].weights;
         let score = 0;
-        checkboxes.forEach((cb, i) => { if (cb.checked) score += weights[i] || 0; });
+        checkboxes.forEach((b, index) => { if (b.checked) score += (weights[index] || 0); });
 
         document.getElementById('num').innerText = score + '%';
         document.getElementById('bar').style.width = Math.min(score, 100) + '%';
 
         const pBox = document.getElementById('pBox');
         if (score >= 100) {
-            pBox.classList.add('complete');
-            document.getElementById('bar').classList.add('complete');
+            pBox.className = "progress-box complete";
+            document.getElementById('bar').className = "complete";
             document.getElementById('msg').innerText = "完美達成！今天妳是最耀眼的女孩！💖";
         } else {
-            pBox.classList.remove('complete');
-            document.getElementById('bar').classList.remove('complete');
+            pBox.className = "progress-box";
+            document.getElementById('bar').className = "";
             document.getElementById('msg').innerText = score >= 80 ? "妳正在閃閃發光唷！✨" : "讓星光再亮一點點吧 🌙";
         }
     }
 
     async function gen() {
-        if (!confirm("確定生成報告嗎？生成後今日將鎖定。")) return;
-        const d = getHKDate();
-        const todayStr = d.toISOString().split('T')[0];
-        const score = parseInt(document.getElementById('num').innerText);
-
-        historyData[todayStr] = score;
-        localStorage.setItem('shineHistory', JSON.stringify(historyData));
-        await saveToCloud();
-        init();
-    }
-
-    function parentUnlock() {
-        const input = prompt("請輸入家長管理密碼：");
-        if (input === PARENT_PIN) {
-            const d = getHKDate();
-            const todayStr = d.toISOString().split('T')[0];
-            delete historyData[todayStr];
-            localStorage.setItem('shineHistory', JSON.stringify(historyData));
-            init();
-            alert("今日已重置，可以重新勾選！");
+        if (confirm("確定生成報告嗎？生成後今日將鎖定。")) {
+            const score = parseInt(document.getElementById('num').innerText) || 0;
+            await saveScore(score);
         }
     }
 
-    function renderCalendar(d, todayStr) {
+    function parentUnlock() {
+        if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
+            isLocked = false;
+            renderTasks(currentMode);
+            alert("已解除鎖定。");
+        }
+    }
+
+    function renderCalendar() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = "";
         ['日','一','二','三','四','五','六'].forEach(l => {
@@ -316,45 +277,39 @@
         const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
         const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 
-        for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
+        for(let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
 
-        for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+        for(let day = 1; day <= daysInMonth; day++) {
             const cell = document.createElement('div');
             cell.className = 'cal-cell active';
-            const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
-
+            const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
             if (dateKey === todayStr) cell.classList.add('today');
 
             const score = historyData[dateKey];
+            let html = `<span>${day}</span>`;
             if (score !== undefined) {
-                cell.innerHTML = `<span>${dayNum}</span><span class="cal-percent">${score}%</span>`;
+                html += `<span class="cal-percent">${score}%</span>`;
                 if (score >= 100) cell.classList.add('lv-high');
                 else if (score >= 80) cell.classList.add('lv-mid');
                 else cell.classList.add('lv-low');
-            } else {
-                cell.innerHTML = `<span>${dayNum}</span>`;
             }
+            cell.innerHTML = html;
             grid.appendChild(cell);
         }
     }
 
-    function updateMonthCount(d) {
-        const year = d.getFullYear();
-        const month = d.getMonth() + 1;
+    function updateMonthCount() {
+        const currentMonth = d.getMonth() + 1;
+        const currentYear = d.getFullYear();
         let count = 0;
-        for (const key in historyData) {
-            const [y, m] = key.split('-').map(Number);
-            if (y === year && m === month && historyData[key] >= 90) count++;
+        for (const dateKey in historyData) {
+            const [year, month] = dateKey.split('-').map(Number);
+            if (year === currentYear && month === currentMonth && historyData[dateKey] >= 90) count++;
         }
         document.getElementById('monthCount').innerText = count;
     }
 
-    async function startApp() {
-        await loadFromCloud();
-        init();
-    }
-
-    startApp();
+    init();
 </script>
 </body>
 </html>
