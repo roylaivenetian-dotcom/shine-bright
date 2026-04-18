@@ -51,7 +51,10 @@
         #msg { font-family: var(--font-cute); font-size: 1.2em; color: var(--primary); }
       
         .action-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 20px; font-size: 1.3em; margin-top: 20px; cursor: pointer; font-family: var(--font-cute); }
-        .parent-unlock { text-align: right; margin-top: 10px; font-size: 0.8em; color: #bbb; text-decoration: underline; cursor: pointer; }
+        
+        /* Parent link is now very small and less obvious */
+        .parent-unlock { text-align: right; margin-top: 8px; font-size: 0.65em; color: #ddd; cursor: pointer; }
+      
         .calendar-section { margin-top: 30px; border-top: 2px solid #f0f0f0; padding-top: 20px; }
         .calendar-title { font-family: var(--font-cute); font-size: 1.5em; color: var(--primary); text-align: center; margin-bottom: 10px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
@@ -89,6 +92,8 @@
     </div>
 
     <div id="taskList"></div>
+
+    <!-- Parent link is now very small and light color (less noticeable to child) -->
     <div class="parent-unlock" onclick="parentUnlock()">家長管理權限</div>
 
     <div class="progress-box" id="pBox">
@@ -161,7 +166,6 @@
     let currentMode = "";
     let historyData = {};
 
-    // Get fresh Hong Kong date
     function getHKDate() {
         const now = new Date();
         return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
@@ -202,7 +206,6 @@
         else if (day === 5) mode = 'friday';
         else if (day === 6) mode = 'saturday';
 
-        // Update top date
         document.getElementById('dateText').innerText = 
             d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
@@ -285,14 +288,15 @@
         historyData[todayStr] = score;
         localStorage.setItem('shineHistory', JSON.stringify(historyData));
         await saveToCloud();
-        init();   // Refresh everything
+        init();
     }
 
     function parentUnlock() {
-        if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
+        const input = prompt("請輸入家長管理密碼：");
+        if (input === PARENT_PIN) {
             const d = getHKDate();
             const todayStr = d.toISOString().split('T')[0];
-            delete historyData[todayStr];   // Clear today's lock
+            delete historyData[todayStr];
             localStorage.setItem('shineHistory', JSON.stringify(historyData));
             init();
             alert("今日已重置，可以重新勾選！");
@@ -345,7 +349,6 @@
         document.getElementById('monthCount').innerText = count;
     }
 
-    // Start the app
     async function startApp() {
         await loadFromCloud();
         init();
