@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 
     <style>
-        /* Same style as before - no change needed */
         :root {
             --primary: #5c6bc0;
             --accent: #ffab91;
@@ -115,23 +114,41 @@
     const WORKER_URL = "https://shine-bright-api.roy-lai-venetian.workers.dev";
 
     const tasks = {
-        mon_thu: { weights: [20, 30, 20, 15, 15], list: [ /* same as before */ 
+        mon_thu: { weights: [20, 30, 20, 15, 15], list: [
             { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
             { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
             { time: "20:15 - 21:00", text: "<b>第二階段：</b>溫習與預習" },
             { time: "21:30 熄燈", text: "放下手機，準時入睡" },
             { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
         ]},
-        tue: { weights: [25, 30, 15, 15, 15], list: [ /* ... same ... */ 
+        tue: { weights: [25, 30, 15, 15, 15], list: [
             { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
             { time: "18:00 - 19:00", text: "<b>回家功課：</b>集中精神完成" },
             { time: "20:00 - 20:30", text: "<b>檢查功課及整理書包</b>" },
             { time: "21:30 熄燈", text: "準時入睡" },
             { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
         ]},
-        wed: { weights: [20, 30, 20, 15, 15], list: [ /* ... */ ]},
-        friday: { weights: [20, 25, 25, 15, 15], list: [ /* ... */ ]},
-        saturday: { weights: [20, 20, 20, 20, 20], list: [ /* ... */ ]},
+        wed: { weights: [20, 30, 20, 15, 15], list: [
+            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+            { time: "17:40 - 19:00", text: "<b>數研班：</b>專注邏輯訓練" },
+            { time: "20:00 - 21:00", text: "<b>高效功課：</b>精簡時間完成作業" },
+            { time: "21:30 熄燈", text: "準時入睡" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        friday: { weights: [20, 25, 25, 15, 15], list: [
+            { time: "05:00 - 06:15", text: "晨間高效溫習" },
+            { time: "16:30 - 18:00", text: "<span class='red-task'>關鍵：完成至少 1/3 週末功課</span>" },
+            { time: "20:15 - 21:00", text: "<span class='red-task'>重點：溫習最少半課書</span>" },
+            { time: "22:30 熄燈", text: "週末彈性入睡時間" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        saturday: { weights: [20, 20, 20, 20, 20], list: [
+            { time: "09:00 - 10:30", text: "<b>日文班</b>" },
+            { time: "11:30 - 12:30", text: "<span class='red-task'>核心：清空所有剩餘功課</span>" },
+            { time: "14:00 - 15:30", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
+            { time: "18:00 - 19:00", text: "<b>羽毛球班</b>" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
         sunday: { weights: [20, 30, 20, 15, 15], list: [
             { time: "09:00 - 10:00", text: "<b>準時起床 + 早餐</b>" },
             { time: "10:30 - 12:00", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
@@ -142,21 +159,15 @@
     };
 
     let currentMode = "";
-    let isLocked = false;
     let historyData = {};
 
-    // ==================== Get fresh Hong Kong date every load ====================
-    function getTodayInfo() {
+    // Get fresh Hong Kong date
+    function getHKToday() {
         const now = new Date();
-        const d = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
-        const todayStr = d.toISOString().split('T')[0];
-        return { d, todayStr };
+        const hkDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
+        const todayStr = hkDate.toISOString().split('T')[0];
+        return { hkDate, todayStr };
     }
-
-    const { d, todayStr } = getTodayInfo();
-
-    document.getElementById('dateText').innerText = 
-        d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
     // Cloud functions
     async function loadFromCloud() {
@@ -164,7 +175,9 @@
             const res = await fetch(`${WORKER_URL}/api/load`);
             if (res.ok) {
                 const json = await res.json();
-                if (json.success && json.historyData) historyData = json.historyData;
+                if (json.success && json.historyData) {
+                    historyData = json.historyData;
+                }
             }
         } catch (e) {}
         if (Object.keys(historyData).length === 0) {
@@ -177,13 +190,15 @@
             await fetch(`${WORKER_URL}/api/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ historyData })
+                body: JSON.stringify({ historyData: historyData })
             });
         } catch (e) {}
     }
 
     function init() {
-        const day = d.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const { hkDate, todayStr } = getHKToday();
+        const day = hkDate.getDay();   // 0 = Sunday
+
         let mode = 'sunday';
         if (day === 1 || day === 4) mode = 'mon_thu';
         else if (day === 2) mode = 'tue';
@@ -191,20 +206,21 @@
         else if (day === 5) mode = 'friday';
         else if (day === 6) mode = 'saturday';
 
+        // Mark today's tab
         const todayBtn = document.getElementById('btn-' + mode);
-        if (todayBtn) todayBtn.innerText += " (今)";
+        if (todayBtn) todayBtn.innerText = todayBtn.innerText.replace(" (今)", "") + " (今)";
 
-        isLocked = (historyData[todayStr] !== undefined);
+        document.getElementById('dateText').innerText = 
+            hkDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
-        renderTasks(mode);
-        renderCalendar();
-        updateMonthCount();
+        const isLocked = (historyData[todayStr] !== undefined);
+
+        renderTasks(mode, isLocked, todayStr);
+        renderCalendar(hkDate, todayStr);
+        updateMonthCount(hkDate);
     }
 
-    // renderTasks, calc, gen, parentUnlock, renderCalendar, updateMonthCount remain the same as previous version
-    // (I kept them identical to the last clean version for consistency)
-
-    function renderTasks(mode) {
+    function renderTasks(mode, isLocked, todayStr) {
         currentMode = mode;
         const listEl = document.getElementById('taskList');
         listEl.innerHTML = "";
@@ -264,26 +280,26 @@
 
     async function gen() {
         if (!confirm("確定生成報告嗎？生成後今日將鎖定。")) return;
+        const { todayStr } = getHKToday();
         const score = parseInt(document.getElementById('num').innerText);
         historyData[todayStr] = score;
         localStorage.setItem('shineHistory', JSON.stringify(historyData));
         await saveToCloud();
 
-        isLocked = true;
-        renderTasks(currentMode);
-        renderCalendar();
-        updateMonthCount();
+        init();   // Refresh everything
     }
 
     function parentUnlock() {
         if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
-            isLocked = false;
-            renderTasks(currentMode);
+            const { todayStr } = getHKToday();
+            delete historyData[todayStr];   // Allow reset
+            localStorage.setItem('shineHistory', JSON.stringify(historyData));
+            init();
             alert("已解除鎖定，可以重新勾選。");
         }
     }
 
-    function renderCalendar() {
+    function renderCalendar(hkDate, todayStr) {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = "";
         ['日','一','二','三','四','五','六'].forEach(l => {
@@ -293,22 +309,22 @@
             grid.appendChild(el);
         });
 
-        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
-        const daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        const firstDay = new Date(hkDate.getFullYear(), hkDate.getMonth(), 1).getDay();
+        const daysInMonth = new Date(hkDate.getFullYear(), hkDate.getMonth() + 1, 0).getDate();
 
         for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
 
         for (let day = 1; day <= daysInMonth; day++) {
             const cell = document.createElement('div');
             cell.className = 'cal-cell active';
-            const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            const dateKey = `${hkDate.getFullYear()}-${String(hkDate.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
             
             if (dateKey === todayStr) cell.classList.add('today');
 
             const score = historyData[dateKey];
             if (score !== undefined) {
-                const percent = `<span class="cal-percent">${score}%</span>`;
-                cell.innerHTML = `<span>${day}</span>${percent}`;
+                const percentHtml = `<span class="cal-percent">${score}%</span>`;
+                cell.innerHTML = `<span>${day}</span>${percentHtml}`;
                 if (score >= 100) cell.classList.add('lv-high');
                 else if (score >= 80) cell.classList.add('lv-mid');
                 else cell.classList.add('lv-low');
@@ -319,9 +335,9 @@
         }
     }
 
-    function updateMonthCount() {
-        const year = d.getFullYear();
-        const month = d.getMonth() + 1;
+    function updateMonthCount(hkDate) {
+        const year = hkDate.getFullYear();
+        const month = hkDate.getMonth() + 1;
         let count = 0;
         for (const key in historyData) {
             const [y, m] = key.split('-').map(Number);
@@ -330,7 +346,7 @@
         document.getElementById('monthCount').innerText = count;
     }
 
-    // Start the app
+    // Start
     async function startApp() {
         await loadFromCloud();
         init();
