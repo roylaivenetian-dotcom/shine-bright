@@ -187,7 +187,7 @@
     let isLocked = false;
     let historyData = {};
 
-    // Use Hong Kong time to avoid timezone issues
+    // Use Hong Kong time for accurate date
     const now = new Date();
     const d = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Hong_Kong" }));
     const todayStr = d.toISOString().split('T')[0];
@@ -195,7 +195,7 @@
     document.getElementById('dateText').innerText = 
         d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
-    // ==================== CLOUD SYNC FUNCTIONS ====================
+    // ==================== CLOUD SYNC ====================
     async function loadFromCloud() {
         try {
             const res = await fetch(`${WORKER_URL}/api/load`);
@@ -204,13 +204,11 @@
             if (json.success && json.historyData) {
                 historyData = json.historyData;
                 localStorage.setItem('shineHistory', JSON.stringify(historyData));
-                console.log("✅ Loaded from cloud successfully");
                 return true;
             }
         } catch (e) {
-            console.log("🌐 Cloud load failed, using localStorage");
+            console.log("Cloud load failed, using localStorage");
         }
-        // Fallback
         historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
     }
 
@@ -222,9 +220,9 @@
                 body: JSON.stringify({ historyData: historyData })
             });
             const json = await res.json();
-            if (json.success) console.log("✅ Saved to cloud successfully");
+            if (json.success) console.log("Saved to cloud");
         } catch (e) {
-            console.log("⚠️ Cloud save failed");
+            console.log("Cloud save failed");
         }
     }
 
@@ -242,7 +240,7 @@
         const todayBtn = document.getElementById('btn-' + todayModeId);
         if (todayBtn) todayBtn.innerText += " (今)";
 
-        // ✅ Key Fix: Check lock status based on today's date every time
+        // Determine if today is already completed
         isLocked = (historyData[todayStr] !== undefined);
 
         renderTasks(todayModeId);
@@ -269,6 +267,8 @@
             const w = weightData[index] || 0;
             const div = document.createElement('div');
             div.className = 'task-item';
+            
+            // ✅ Always start unchecked on new day. Only disable when locked.
             div.innerHTML = `
                 <input type="checkbox" onchange="calc()" ${isLocked ? 'disabled' : ''}>
                 <div class="info-pill"><span class="time-range">${task.time}</span></div>
@@ -286,6 +286,7 @@
             gBtn.innerText = "💫 生成今日星光報告";
         }
 
+        // Reset progress to 0% when rendering (important for new days)
         calc();
     }
 
