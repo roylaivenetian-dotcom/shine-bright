@@ -313,7 +313,7 @@
         localStorage.setItem('parentApproved', JSON.stringify(parentApproved));
         renderCalendar();
         updateMonthCount();
-        saveToCloud();   // also save to cloud
+        saveToCloud();
     }
 
     function renderCalendar() {
@@ -341,11 +341,7 @@
             const childScore = historyData[dateKey] || 0;
             const isParentApproved = !!parentApproved[dateKey];
 
-            let percentHtml = "";
-
-            if (childScore > 0 || isParentApproved) {
-                percentHtml = `<span class="cal-percent">${childScore}%</span>`;
-            }
+            let percentHtml = childScore > 0 ? `<span class="cal-percent">${childScore}%</span>` : "";
 
             if (isParentApproved) {
                 cell.classList.add('lv-high', 'parent-approved');
@@ -372,13 +368,10 @@
         const currentMonth = d.getMonth() + 1;
         const currentYear = d.getFullYear();
         let count = 0;
-        for (const dateKey in historyData) {
+        for (const dateKey in parentApproved) {
             const [year, month] = dateKey.split('-').map(Number);
             if (year === currentYear && month === currentMonth) {
-                // Parent approval overrides everything
-                if (parentApproved[dateKey] || historyData[dateKey] >= 80) {
-                    count++;
-                }
+                count++;
             }
         }
         document.getElementById('monthCount').innerText = count;
