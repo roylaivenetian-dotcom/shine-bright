@@ -101,7 +101,9 @@
     <div id="taskList"></div>
     <div class="parent-unlock" onclick="parentUnlock()">家長管理權限</div>
     <div id="parentReviewBtn" style="display:none; text-align:center; margin:10px 0;">
-        <button class="action-btn" style="background:#4caf50; width:auto; padding:10px 20px; font-size:1em;" onclick="toggleReviewMode()">家長審核模式</button>
+        <button onclick="toggleReviewMode()" style="background:#4caf50; color:white; border:none; padding:10px 20px; border-radius:12px; font-size:1em; cursor:pointer;">
+            家長審核模式
+        </button>
     </div>
     <div class="progress-box" id="pBox">
         <b>今日星光達成率：<span id="num">0%</span></b>
@@ -124,36 +126,76 @@
     const WORKER_URL = "https://shine-bright-api.roy-lai-venetian.workers.dev";
 
     let isReviewMode = false;
+    let parentApproved = JSON.parse(localStorage.getItem('parentApproved') || '{}');
 
-    const tasks = { /* 你的 tasks 資料保持不變 */ 
-        mon_thu: { weights: [20, 30, 20, 15, 15], list: [ /* ... */ ]},
-        tue: { weights: [25, 30, 15, 15, 15], list: [ /* ... */ ]},
-        wed: { weights: [20, 30, 20, 15, 15], list: [ /* ... */ ]},
-        friday: { weights: [20, 25, 25, 15, 15], list: [ /* ... */ ]},
-        saturday: { weights: [20, 20, 20, 20, 20], list: [ /* ... */ ]},
-        sunday: { weights: [20, 30, 20, 15, 15], list: [ /* ... */ ]}
+    const tasks = {
+        mon_thu: { weights: [20, 30, 20, 15, 15], list: [
+            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+            { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
+            { time: "20:15 - 21:00", text: "<b>第二階段：</b>溫習與預習" },
+            { time: "21:30 熄燈", text: "放下手機，準時入睡" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        tue: { weights: [25, 30, 15, 15, 15], list: [
+            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+            { time: "18:00 - 19:00", text: "<b>回家功課：</b>集中精神完成" },
+            { time: "20:00 - 20:30", text: "<b>檢查功課及整理書包</b>" },
+            { time: "21:30 熄燈", text: "準時入睡" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        wed: { weights: [20, 30, 20, 15, 15], list: [
+            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+            { time: "17:40 - 19:00", text: "<b>數研班：</b>專注邏輯訓練" },
+            { time: "20:00 - 21:00", text: "<b>高效功課：</b>精簡時間完成作業" },
+            { time: "21:30 熄燈", text: "準時入睡" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        friday: { weights: [20, 25, 25, 15, 15], list: [
+            { time: "05:00 - 06:15", text: "晨間高效溫習" },
+            { time: "16:30 - 18:00", text: "<span class='red-task'>關鍵：完成至少 1/3 週末功課</span>" },
+            { time: "20:15 - 21:00", text: "<span class='red-task'>重點：溫習最少半課書</span>" },
+            { time: "22:30 熄燈", text: "週末彈性入睡時間" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        saturday: { weights: [20, 20, 20, 20, 20], list: [
+            { time: "09:00 - 10:30", text: "<b>日文班</b>" },
+            { time: "11:30 - 12:30", text: "<span class='red-task'>核心：清空所有剩餘功課</span>" },
+            { time: "14:00 - 15:30", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
+            { time: "18:00 - 19:00", text: "<b>羽毛球班</b>" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]},
+        sunday: { weights: [20, 30, 20, 15, 15], list: [
+            { time: "09:00 - 10:00", text: "<b>準時起床 + 早餐</b>" },
+            { time: "10:30 - 12:00", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
+            { time: "16:30 - 17:30", text: "<b>檢查書包、功課與校服</b>" },
+            { time: "21:30 熄燈", text: "準時入睡" },
+            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+        ]}
     };
 
     let currentMode = "";
     let isLocked = false;
     let historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
-    let parentApproved = JSON.parse(localStorage.getItem('parentApproved') || '{}'); // 新增：家長手動審核記錄
 
     const d = new Date();
     const todayStr = d.toISOString().split('T')[0];
 
     document.getElementById('dateText').innerText = d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
-    // 雲端同步函數（保持不變）
+    // Cloud Sync
     async function loadFromCloud() {
         try {
             const res = await fetch(`${WORKER_URL}/api/load`);
             if (res.ok) {
                 const json = await res.json();
-                if (json.success && json.historyData) historyData = json.historyData;
+                if (json.success && json.historyData) {
+                    historyData = json.historyData;
+                    localStorage.setItem('shineHistory', JSON.stringify(historyData));
+                }
             }
-        } catch (e) {}
-        historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
+        } catch (e) {
+            historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
+        }
     }
 
     async function saveToCloud() {
@@ -259,22 +301,22 @@
         if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
             isLocked = false;
             document.getElementById('parentReviewBtn').style.display = 'block';
+            alert("已進入家長模式\n點擊下方「家長審核模式」按鈕後，可點擊日曆手動審核日期");
             renderTasks(currentMode);
-            alert("已解除鎖定並開啟家長審核模式");
         }
     }
 
     function toggleReviewMode() {
         isReviewMode = !isReviewMode;
-        alert(isReviewMode ? "已進入家長審核模式\n請點擊日曆上的日期進行審核" : "已退出審核模式");
+        alert(isReviewMode ? "✅ 已進入家長審核模式\n請點擊日曆上的日期進行審核" : "已退出審核模式");
         renderCalendar();
     }
 
     function toggleParentApproval(dateKey) {
-        if (!parentApproved[dateKey]) {
-            parentApproved[dateKey] = true;
-        } else {
+        if (parentApproved[dateKey]) {
             delete parentApproved[dateKey];
+        } else {
+            parentApproved[dateKey] = true;
         }
         localStorage.setItem('parentApproved', JSON.stringify(parentApproved));
         renderCalendar();
@@ -304,11 +346,11 @@
             if(dateKey === todayStr) cell.classList.add('today');
 
             const score = historyData[dateKey] || 0;
-            const isParentApproved = parentApproved[dateKey];
+            const isParentApproved = !!parentApproved[dateKey];
 
             let percentHtml = "";
 
-            if (score !== 0 || isParentApproved) {
+            if (score > 0 || isParentApproved) {
                 percentHtml = `<span class="cal-percent">${score}%</span>`;
                 
                 if (isParentApproved) {
@@ -323,10 +365,9 @@
             }
 
             cell.innerHTML = `<span>${day}</span>${percentHtml}`;
-            
-            // 只有在審核模式下才允許點擊審核
+
             if (isReviewMode) {
-                cell.style.cursor = 'pointer';
+                cell.style.cursor = "pointer";
                 cell.onclick = () => toggleParentApproval(dateKey);
             }
 
