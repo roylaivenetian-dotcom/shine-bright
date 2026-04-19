@@ -25,49 +25,79 @@
             margin: 0; 
         }
       
-        .container { max-width: 480px; background: white; padding: 25px; border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05); margin: 20px auto; border: 1px solid #f0f0f0; }
+        .container { 
+            max-width: 480px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
+            margin: 20px auto; 
+            border: 1px solid #f0f0f0;
+        }
       
         h2 { text-align: center; color: var(--primary); font-family: var(--font-cute); font-size: 2.2em; margin-bottom: 5px; }
         .date-display { text-align: center; font-size: 1.1em; color: var(--accent); margin-bottom: 20px; font-weight: bold; }
       
-        .admin-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px; 
-            background: #f9f9f9; padding: 10px; border-radius: 20px; }
+        .admin-controls { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; 
+            margin-bottom: 25px; background: #f9f9f9; padding: 10px; border-radius: 20px; 
+        }
       
         .tab-btn {
             padding: 6px 10px; font-size: 0.75em; border: none; border-radius: 12px;
-            cursor: pointer; background: white; color: #999; transition: 0.3s; font-family: var(--font-cute);
+            cursor: pointer; background: white; color: #999; transition: 0.3s; 
+            font-family: var(--font-cute);
         }
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3); }
+        .tab-btn.active { 
+            background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3); 
+        }
         .tab-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .task-item { display: flex; align-items: flex-start; padding: 12px 5px; border-bottom: 1px dashed #eee; }
-        .task-item input { width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); }
-        .task-item input:disabled { cursor: not-allowed; opacity: 0.5; }
-        .task-item.disabled .task-text, .task-item.disabled .time-range { opacity: 0.6; }
-
-        .restriction-notice {
-            background: #fff3e0; color: #ef6c00; padding: 14px; border-radius: 16px;
-            font-size: 0.95em; text-align: center; margin: 12px 0 20px 0;
-            border: 2px dashed #ffcc80;
+        .task-item { 
+            display: flex; align-items: flex-start; padding: 12px 5px; border-bottom: 1px dashed #eee; 
+        }
+        .task-item input { 
+            width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; 
+            flex-shrink: 0; accent-color: var(--accent); cursor: pointer; 
+        }
+        .task-item input:disabled { 
+            cursor: not-allowed; opacity: 0.5; 
+        }
+        .task-item.disabled .task-text, 
+        .task-item.disabled .time-range { 
+            opacity: 0.6; 
         }
 
         .info-pill { min-width: 105px; margin-right: 12px; }
-        .time-range { background: #e8eaf6; color: var(--primary); padding: 3px 6px; border-radius: 8px; 
-            font-size: 0.8em; font-weight: bold; display: block; text-align: center; }
+        .time-range { 
+            background: #e8eaf6; color: var(--primary); padding: 3px 6px; border-radius: 8px; 
+            font-size: 0.8em; font-weight: bold; display: block; text-align: center; 
+        }
         .task-text { font-size: 1em; line-height: 1.4; flex-grow: 1; }
-        .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; }
+        .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; font-weight: normal; }
+        .red-task { color: var(--danger); font-weight: bold; }
+        .family-task { color: #5d4037; font-weight: bold; }
 
-        .progress-box { margin-top: 25px; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 20px; }
+        .progress-box { 
+            margin-top: 25px; text-align: center; padding: 20px; 
+            background: #fdf2f2; border-radius: 20px; transition: 0.3s; 
+        }
         .progress-box.complete { background: #e8f5e9; }
         .bar-bg { background: #eee; border-radius: 50px; height: 14px; margin: 15px 0; overflow: hidden; }
         #bar { background: linear-gradient(90deg, #5c6bc0, #8e99f3); height: 100%; width: 0%; transition: 0.8s ease; }
         #bar.complete { background: linear-gradient(90deg, #4caf50, #8bc34a); }
         #msg { font-family: var(--font-cute); font-size: 1.2em; color: var(--primary); }
-
-        .action-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; 
-            border-radius: 20px; font-size: 1.3em; margin-top: 20px; cursor: pointer; font-family: var(--font-cute); }
-        .parent-unlock { text-align: right; margin-top: 10px; font-size: 0.8em; color: #bbb; text-decoration: underline; cursor: pointer; }
+        #msg.complete { color: var(--success); }
+      
+        .action-btn { 
+            width: 100%; padding: 18px; background: var(--primary); color: white; border: none; 
+            border-radius: 20px; font-size: 1.3em; margin-top: 20px; cursor: pointer; 
+            font-family: var(--font-cute); 
+        }
+        .parent-unlock { 
+            text-align: right; margin-top: 10px; font-size: 0.8em; color: #bbb; 
+            text-decoration: underline; cursor: pointer; 
+        }
         
         .calendar-section { margin-top: 30px; border-top: 2px solid #f0f0f0; padding-top: 20px; }
         .calendar-title { font-family: var(--font-cute); font-size: 1.5em; color: var(--primary); text-align: center; margin-bottom: 10px; }
@@ -77,18 +107,23 @@
         .cal-cell {
             aspect-ratio: 1; border-radius: 12px; background: #f9f9f9; font-size: 0.75em;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #ccc; border: 2px solid transparent; transition: 0.3s;
+            color: #ccc; border: 2px solid transparent; transition: 0.3s; position: relative;
         }
         .cal-cell.active { color: #444; background: #fff; border: 1px solid #eee; }
         .cal-cell .cal-percent { font-size: 0.7em; margin-top: 2px; font-weight: bold; }
+      
         .cal-cell.lv-high { background: #c8e6c9 !important; color: #2e7d32; border-color: #a5d6a7; }
         .cal-cell.lv-mid { background: #fff9c4 !important; color: #f57f17; border-color: #fff176; }
         .cal-cell.lv-low { background: #f5f5f5 !important; color: #d32f2f; border: 2px solid var(--danger) !important; }
+      
         .cal-cell.today { background: #e8eaf6; border: 2px solid var(--primary) !important; font-weight: bold; }
         .cal-cell.parent-approved { box-shadow: 0 0 0 3px #4caf50 inset; font-weight: bold; }
         
-        .award-note { margin-top: 15px; padding: 15px; background: #fffde7; border-radius: 20px; 
-            font-size: 0.9em; color: #795548; line-height: 1.5; border: 2px dashed #fff59d; text-align: center; }
+        .award-note { 
+            margin-top: 15px; padding: 15px; background: #fffde7; border-radius: 20px; 
+            font-size: 0.9em; color: #795548; line-height: 1.5; 
+            border: 2px dashed #fff59d; text-align: center; 
+        }
         .award-main { color: var(--danger); font-weight: bold; font-size: 1.1em; display: block; margin-bottom: 5px; }
         .counter-box { display: inline-block; background: white; padding: 5px 15px; border-radius: 10px; margin-top: 8px; border: 1px solid #eee; }
         .counter-num { color: var(--primary); font-size: 1.2em; font-weight: bold; }
@@ -100,10 +135,6 @@
     <div class="date-display" id="dateText"></div>
     
     <div class="admin-controls" id="modeTabs"></div>
-    
-    <div id="restrictionNotice" class="restriction-notice" style="display: none;">
-        ⚠️ 只能在<strong>今天</strong>打卡！<br>其他日子無法勾選
-    </div>
     
     <div id="taskList"></div>
     
@@ -147,9 +178,8 @@
     
     const d = new Date();
     const todayStr = d.toISOString().split('T')[0];
-    const todayDayOfWeek = d.getDay();   // 0=Sunday, 1=Monday, ...
+    const todayDayOfWeek = d.getDay();
 
-    // ==================== ALL TASKS ====================
     const tasks = {
         mon_thu: { weights: [20, 30, 20, 15, 15], list: [
             { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
@@ -227,16 +257,12 @@
         const listEl = document.getElementById('taskList');
         listEl.innerHTML = "";
 
-        // Highlight active tab
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.toggle('active', btn.id === 'btn-' + mode);
         });
 
         const isTodayMode = (mode === getTodayMode());
         const canEdit = isParentMode || (isTodayMode && !isLocked);
-
-        // Show restriction notice
-        document.getElementById('restrictionNotice').style.display = canEdit ? 'none' : 'block';
 
         const taskData = tasks[mode].list;
         const weightData = tasks[mode].weights;
@@ -254,7 +280,6 @@
             listEl.appendChild(div);
         });
 
-        // Generate button
         const gBtn = document.getElementById('genBtn');
         gBtn.disabled = !canEdit;
         gBtn.innerText = (isLocked && !isParentMode) ? "今日報告已完成封存" : "💫 生成今日星光報告";
@@ -302,7 +327,7 @@
             isParentMode = true;
             isLocked = false;
             document.getElementById('parentReviewBtn').style.display = 'block';
-            alert("✅ 家長模式已開啟\n現在可以自由切換日子並修改任務");
+            alert("✅ 家長模式已開啟\n現在可以自由切換並修改任何日子");
             renderTasks(currentMode);
         }
     }
@@ -323,7 +348,7 @@
     }
 
     function deleteDayRecord(dateKey) {
-        if (!confirm(`確定要刪除 ${dateKey} 的所有記錄嗎？`)) return;
+        if (!confirm(`確定要刪除 ${dateKey} 的所有記錄嗎？此操作無法復原。`)) return;
         delete historyData[dateKey];
         delete parentApproved[dateKey];
         localStorage.setItem('shineHistory', JSON.stringify(historyData));
@@ -334,11 +359,14 @@
         alert(`已刪除 ${dateKey} 的記錄`);
     }
 
-    function renderCalendar() { /* unchanged - same as your original */ 
+    function renderCalendar() {
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = "";
         ['日','一','二','三','四','五','六'].forEach(l => {
-            const el = document.createElement('div'); el.className = 'cal-day-label'; el.innerText = l; grid.appendChild(el);
+            const el = document.createElement('div');
+            el.className = 'cal-day-label';
+            el.innerText = l;
+            grid.appendChild(el);
         });
 
         const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay();
@@ -355,10 +383,15 @@
             const childScore = historyData[dateKey] || 0;
             const isParentApproved = !!parentApproved[dateKey];
 
-            if (isParentApproved) cell.classList.add('lv-high', 'parent-approved');
-            else if (childScore >= 80) cell.classList.add('lv-high');
-            else if (childScore >= 60) cell.classList.add('lv-mid');
-            else if (childScore > 0) cell.classList.add('lv-low');
+            if (isParentApproved) {
+                cell.classList.add('lv-high', 'parent-approved');
+            } else if (childScore >= 80) {
+                cell.classList.add('lv-high');
+            } else if (childScore >= 60) {
+                cell.classList.add('lv-mid');
+            } else if (childScore > 0) {
+                cell.classList.add('lv-low');
+            }
 
             let percentHtml = childScore > 0 ? `<span class="cal-percent">${childScore}%</span>` : "";
             cell.innerHTML = `<span>${day}</span>${percentHtml}`;
@@ -367,7 +400,7 @@
                 cell.style.cursor = "pointer";
                 cell.onclick = () => toggleParentApproval(dateKey);
                 let pressTimer;
-                cell.addEventListener('mousedown', () => pressTimer = setTimeout(() => deleteDayRecord(dateKey), 700));
+                cell.addEventListener('mousedown', () => { pressTimer = setTimeout(() => deleteDayRecord(dateKey), 700); });
                 cell.addEventListener('mouseup', () => clearTimeout(pressTimer));
                 cell.addEventListener('mouseleave', () => clearTimeout(pressTimer));
             }
@@ -380,8 +413,8 @@
         const currentYear = d.getFullYear();
         let count = 0;
         for (const dateKey in parentApproved) {
-            const [y, m] = dateKey.split('-').map(Number);
-            if (y === currentYear && m === currentMonth) count++;
+            const [year, month] = dateKey.split('-').map(Number);
+            if (year === currentYear && month === currentMonth) count++;
         }
         document.getElementById('monthCount').innerText = count;
     }
@@ -403,7 +436,7 @@
         try {
             await fetch(`${WORKER_URL}/api/save`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ historyData, parentApproved })
             });
         } catch(e) {}
