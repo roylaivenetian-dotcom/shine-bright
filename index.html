@@ -15,7 +15,6 @@
             --bg: #fffdf9;
             --danger: #e91e63;
             --success: #4caf50;
-            --warning: #fbc02d;
             --font-cute: 'Ma Shan Zheng', cursive, "Microsoft JhengHei";
         }
        
@@ -29,10 +28,7 @@
         h2 { text-align: center; color: var(--primary); font-family: var(--font-cute); font-size: 2.2em; margin-bottom: 5px; }
         .date-display { text-align: center; font-size: 1.1em; color: var(--accent); margin-bottom: 20px; font-weight: bold; }
        
-        .admin-controls {
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px;
-            background: #f9f9f9; padding: 10px; border-radius: 20px;
-        }
+        .admin-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px; background: #f9f9f9; padding: 10px; border-radius: 20px; }
        
         .tab-btn {
             padding: 6px 10px; font-size: 0.75em; border: none; border-radius: 12px;
@@ -78,7 +74,7 @@
         .cal-cell.lv-low { background: #f5f5f5 !important; color: #d32f2f; border: 2px solid var(--danger) !important; }
        
         .cal-cell.today { background: #e8eaf6; border: 2px solid var(--primary) !important; font-weight: bold; }
-        .cal-cell.parent-approved { box-shadow: 0 0 0 3px #4caf50 inset; }
+        .cal-cell.parent-approved { box-shadow: 0 0 0 3px #4caf50 inset; font-weight: bold; }
 
         .award-note { margin-top: 15px; padding: 15px; background: #fffde7; border-radius: 20px; font-size: 0.9em; color: #795548; line-height: 1.5; border: 2px dashed #fff59d; text-align: center; }
         .award-main { color: var(--danger); font-weight: bold; font-size: 1.1em; display: block; margin-bottom: 5px; }
@@ -100,8 +96,8 @@
     </div>
     <div id="taskList"></div>
     <div class="parent-unlock" onclick="parentUnlock()">家長管理權限</div>
-    <div id="parentReviewBtn" style="display:none; text-align:center; margin:10px 0;">
-        <button onclick="toggleReviewMode()" style="background:#4caf50; color:white; border:none; padding:10px 20px; border-radius:12px; font-size:1em; cursor:pointer;">
+    <div id="parentReviewBtn" style="display:none; text-align:center; margin:15px 0;">
+        <button onclick="toggleReviewMode()" style="background:#4caf50; color:white; border:none; padding:12px 24px; border-radius:12px; font-size:1.05em; cursor:pointer;">
             家長審核模式
         </button>
     </div>
@@ -188,14 +184,10 @@
             const res = await fetch(`${WORKER_URL}/api/load`);
             if (res.ok) {
                 const json = await res.json();
-                if (json.success && json.historyData) {
-                    historyData = json.historyData;
-                    localStorage.setItem('shineHistory', JSON.stringify(historyData));
-                }
+                if (json.success && json.historyData) historyData = json.historyData;
             }
-        } catch (e) {
-            historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
-        }
+        } catch (e) {}
+        historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
     }
 
     async function saveToCloud() {
@@ -301,7 +293,7 @@
         if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
             isLocked = false;
             document.getElementById('parentReviewBtn').style.display = 'block';
-            alert("已進入家長模式\n點擊下方「家長審核模式」按鈕後，可點擊日曆手動審核日期");
+            alert("家長模式已開啟\n點擊「家長審核模式」後，可點擊日曆手動審核日期");
             renderTasks(currentMode);
         }
     }
@@ -321,6 +313,7 @@
         localStorage.setItem('parentApproved', JSON.stringify(parentApproved));
         renderCalendar();
         updateMonthCount();
+        saveToCloud();   // also save to cloud
     }
 
     function renderCalendar() {
@@ -345,23 +338,23 @@
 
             if(dateKey === todayStr) cell.classList.add('today');
 
-            const score = historyData[dateKey] || 0;
+            const childScore = historyData[dateKey] || 0;
             const isParentApproved = !!parentApproved[dateKey];
 
             let percentHtml = "";
 
-            if (score > 0 || isParentApproved) {
-                percentHtml = `<span class="cal-percent">${score}%</span>`;
-                
-                if (isParentApproved) {
-                    cell.classList.add('lv-high', 'parent-approved');
-                } else if (score >= 80) {
-                    cell.classList.add('lv-high');
-                } else if (score >= 60) {
-                    cell.classList.add('lv-mid');
-                } else {
-                    cell.classList.add('lv-low');
-                }
+            if (childScore > 0 || isParentApproved) {
+                percentHtml = `<span class="cal-percent">${childScore}%</span>`;
+            }
+
+            if (isParentApproved) {
+                cell.classList.add('lv-high', 'parent-approved');
+            } else if (childScore >= 80) {
+                cell.classList.add('lv-high');
+            } else if (childScore >= 60) {
+                cell.classList.add('lv-mid');
+            } else if (childScore > 0) {
+                cell.classList.add('lv-low');
             }
 
             cell.innerHTML = `<span>${day}</span>${percentHtml}`;
@@ -382,7 +375,8 @@
         for (const dateKey in historyData) {
             const [year, month] = dateKey.split('-').map(Number);
             if (year === currentYear && month === currentMonth) {
-                if (historyData[dateKey] >= 80 || parentApproved[dateKey]) {
+                // Parent approval overrides everything
+                if (parentApproved[dateKey] || historyData[dateKey] >= 80) {
                     count++;
                 }
             }
