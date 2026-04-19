@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#5c6bc0">
     <title>Shine Bright ✨ 少女星光養成計劃</title>
-   
+  
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --primary: #5c6bc0;
@@ -17,35 +16,107 @@
             --success: #4caf50;
             --font-cute: 'Ma Shan Zheng', cursive, "Microsoft JhengHei";
         }
-       
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg); padding: 15px; color: #444; margin: 0; }
-       
-        .container {
-            max-width: 480px; background: white; padding: 25px; border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05); margin: 20px auto; border: 1px solid #f0f0f0;
+      
+        body { 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            background-color: var(--bg); 
+            padding: 15px; 
+            color: #444; 
+            margin: 0; 
         }
-       
+      
+        .container {
+            max-width: 480px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
+            margin: 20px auto; 
+            border: 1px solid #f0f0f0;
+        }
+      
         h2 { text-align: center; color: var(--primary); font-family: var(--font-cute); font-size: 2.2em; margin-bottom: 5px; }
         .date-display { text-align: center; font-size: 1.1em; color: var(--accent); margin-bottom: 20px; font-weight: bold; }
-       
-        .admin-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 25px; background: #f9f9f9; padding: 10px; border-radius: 20px; }
-       
-        .tab-btn {
-            padding: 6px 10px; font-size: 0.75em; border: none; border-radius: 12px;
-            cursor: pointer; background: white; color: #999; transition: 0.3s; font-family: var(--font-cute);
+      
+        .admin-controls { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 5px; 
+            margin-bottom: 25px; 
+            background: #f9f9f9; 
+            padding: 10px; 
+            border-radius: 20px; 
         }
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3); }
-        .task-item { display: flex; align-items: flex-start; padding: 12px 5px; border-bottom: 1px dashed #eee; }
-        .task-item input { width: 24px; height: 24px; margin-right: 15px; margin-top: 2px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
-        .task-item input:disabled { cursor: not-allowed; opacity: 0.6; }
-       
+      
+        .tab-btn {
+            padding: 6px 10px; 
+            font-size: 0.75em; 
+            border: none; 
+            border-radius: 12px;
+            cursor: pointer; 
+            background: white; 
+            color: #999; 
+            transition: 0.3s; 
+            font-family: var(--font-cute);
+        }
+        .tab-btn.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 10px rgba(92, 107, 192, 0.3); 
+        }
+        
+        .task-item { 
+            display: flex; 
+            align-items: flex-start; 
+            padding: 12px 5px; 
+            border-bottom: 1px dashed #eee; 
+        }
+        .task-item input { 
+            width: 24px; 
+            height: 24px; 
+            margin-right: 15px; 
+            margin-top: 2px; 
+            flex-shrink: 0; 
+            accent-color: var(--accent); 
+            cursor: pointer; 
+        }
+        .task-item input:disabled { 
+            cursor: not-allowed; 
+            opacity: 0.5; 
+        }
+        .task-item.disabled .task-text,
+        .task-item.disabled .time-range {
+            opacity: 0.6;
+        }
+
+        .restriction-notice {
+            background: #fff3e0;
+            color: #ef6c00;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 0.95em;
+            text-align: center;
+            margin: 10px 0 20px 0;
+            border: 2px dashed #ffcc80;
+        }
+
         .info-pill { min-width: 105px; margin-right: 12px; }
-        .time-range { background: #e8eaf6; color: var(--primary); padding: 3px 6px; border-radius: 8px; font-size: 0.8em; font-weight: bold; display: block; text-align: center; }
+        .time-range { 
+            background: #e8eaf6; 
+            color: var(--primary); 
+            padding: 3px 6px; 
+            border-radius: 8px; 
+            font-size: 0.8em; 
+            font-weight: bold; 
+            display: block; 
+            text-align: center; 
+        }
         .task-text { font-size: 1em; line-height: 1.4; flex-grow: 1; }
         .weight-text { color: #aaa; font-size: 0.85em; margin-left: 5px; font-weight: normal; }
         .red-task { color: var(--danger); font-weight: bold; }
         .family-task { color: #5d4037; font-weight: bold; }
-       
+
         .progress-box { margin-top: 25px; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 20px; transition: 0.3s; }
         .progress-box.complete { background: #e8f5e9; }
         .bar-bg { background: #eee; border-radius: 50px; height: 14px; margin: 15px 0; overflow: hidden; }
@@ -53,30 +124,68 @@
         #bar.complete { background: linear-gradient(90deg, #4caf50, #8bc34a); }
         #msg { font-family: var(--font-cute); font-size: 1.2em; color: var(--primary); }
         #msg.complete { color: var(--success); }
-       
-        .action-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 20px; font-size: 1.3em; margin-top: 20px; cursor: pointer; font-family: var(--font-cute); }
-        .parent-unlock { text-align: right; margin-top: 10px; font-size: 0.8em; color: #bbb; text-decoration: underline; cursor: pointer; }
+      
+        .action-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 20px; 
+            font-size: 1.3em; 
+            margin-top: 20px; 
+            cursor: pointer; 
+            font-family: var(--font-cute); 
+        }
+        .parent-unlock { 
+            text-align: right; 
+            margin-top: 10px; 
+            font-size: 0.8em; 
+            color: #bbb; 
+            text-decoration: underline; 
+            cursor: pointer; 
+        }
+        
         .calendar-section { margin-top: 30px; border-top: 2px solid #f0f0f0; padding-top: 20px; }
         .calendar-title { font-family: var(--font-cute); font-size: 1.5em; color: var(--primary); text-align: center; margin-bottom: 10px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
         .cal-day-label { font-size: 0.7em; color: #999; font-weight: bold; padding-bottom: 5px; }
-       
+      
         .cal-cell {
-            aspect-ratio: 1; border-radius: 12px; background: #f9f9f9; font-size: 0.75em;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #ccc; border: 2px solid transparent; transition: 0.3s; position: relative;
+            aspect-ratio: 1; 
+            border-radius: 12px; 
+            background: #f9f9f9; 
+            font-size: 0.75em;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            color: #ccc; 
+            border: 2px solid transparent; 
+            transition: 0.3s; 
+            position: relative;
         }
         .cal-cell.active { color: #444; background: #fff; border: 1px solid #eee; }
         .cal-cell .cal-percent { font-size: 0.7em; margin-top: 2px; font-weight: bold; }
-       
+      
         .cal-cell.lv-high { background: #c8e6c9 !important; color: #2e7d32; border-color: #a5d6a7; }
         .cal-cell.lv-mid { background: #fff9c4 !important; color: #f57f17; border-color: #fff176; }
         .cal-cell.lv-low { background: #f5f5f5 !important; color: #d32f2f; border: 2px solid var(--danger) !important; }
-       
+      
         .cal-cell.today { background: #e8eaf6; border: 2px solid var(--primary) !important; font-weight: bold; }
         .cal-cell.parent-approved { box-shadow: 0 0 0 3px #4caf50 inset; font-weight: bold; }
-
-        .award-note { margin-top: 15px; padding: 15px; background: #fffde7; border-radius: 20px; font-size: 0.9em; color: #795548; line-height: 1.5; border: 2px dashed #fff59d; text-align: center; }
+        
+        .award-note { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: #fffde7; 
+            border-radius: 20px; 
+            font-size: 0.9em; 
+            color: #795548; 
+            line-height: 1.5; 
+            border: 2px dashed #fff59d; 
+            text-align: center; 
+        }
         .award-main { color: var(--danger); font-weight: bold; font-size: 1.1em; display: block; margin-bottom: 5px; }
         .counter-box { display: inline-block; background: white; padding: 5px 15px; border-radius: 10px; margin-top: 8px; border: 1px solid #eee; }
         .counter-num { color: var(--primary); font-size: 1.2em; font-weight: bold; }
@@ -86,27 +195,31 @@
 <div class="container">
     <h2>Shine Bright ✨</h2>
     <div class="date-display" id="dateText"></div>
-    <div class="admin-controls" id="modeTabs">
-        <button class="tab-btn" id="btn-mon_thu" onclick="renderTasks('mon_thu')">週一/四</button>
-        <button class="tab-btn" id="btn-tue" onclick="renderTasks('tue')">週二</button>
-        <button class="tab-btn" id="btn-wed" onclick="renderTasks('wed')">週三(數研)</button>
-        <button class="tab-btn" id="btn-friday" onclick="renderTasks('friday')">週五</button>
-        <button class="tab-btn" id="btn-saturday" onclick="renderTasks('saturday')">週六</button>
-        <button class="tab-btn" id="btn-sunday" onclick="renderTasks('sunday')">週日</button>
+    
+    <div class="admin-controls" id="modeTabs"></div>
+    
+    <div id="restrictionNotice" class="restriction-notice" style="display: none;">
+        ⚠️ 只能在<strong>當天</strong>打卡哦～ 其他日子無法勾選
     </div>
+    
     <div id="taskList"></div>
+    
     <div class="parent-unlock" onclick="parentUnlock()">家長管理權限</div>
+    
     <div id="parentReviewBtn" style="display:none; text-align:center; margin:15px 0;">
         <button onclick="toggleReviewMode()" style="background:#4caf50; color:white; border:none; padding:12px 24px; border-radius:12px; font-size:1.05em; cursor:pointer;">
             家長審核模式
         </button>
     </div>
+
     <div class="progress-box" id="pBox">
         <b>今日星光達成率：<span id="num">0%</span></b>
         <div class="bar-bg"><div id="bar"></div></div>
         <div id="msg">讓星光閃耀吧 🌙</div>
     </div>
+    
     <button class="action-btn" id="genBtn" onclick="gen()">💫 生成今日星光報告</button>
+
     <div class="calendar-section">
         <div class="calendar-title">星光成就日曆 📅</div>
         <div class="calendar-grid" id="calendarGrid"></div>
@@ -120,91 +233,93 @@
 <script>
     const PARENT_PIN = "8888";
     const WORKER_URL = "https://shine-bright-api.roy-lai-venetian.workers.dev";
-
+    
     let isReviewMode = false;
+    let isParentMode = false;
     let parentApproved = JSON.parse(localStorage.getItem('parentApproved') || '{}');
-
-    const tasks = {
-        mon_thu: { weights: [20, 30, 20, 15, 15], list: [
-            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
-            { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
-            { time: "20:15 - 21:00", text: "<b>第二階段：</b>溫習與預習" },
-            { time: "21:30 熄燈", text: "放下手機，準時入睡" },
-            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
-        ]},
-        tue: { weights: [25, 30, 15, 15, 15], list: [
-            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
-            { time: "18:00 - 19:00", text: "<b>回家功課：</b>集中精神完成" },
-            { time: "20:00 - 20:30", text: "<b>檢查功課及整理書包</b>" },
-            { time: "21:30 熄燈", text: "準時入睡" },
-            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
-        ]},
-        wed: { weights: [20, 30, 20, 15, 15], list: [
-            { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
-            { time: "17:40 - 19:00", text: "<b>數研班：</b>專注邏輯訓練" },
-            { time: "20:00 - 21:00", text: "<b>高效功課：</b>精簡時間完成作業" },
-            { time: "21:30 熄燈", text: "準時入睡" },
-            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
-        ]},
-        friday: { weights: [20, 25, 25, 15, 15], list: [
-            { time: "05:00 - 06:15", text: "晨間高效溫習" },
-            { time: "16:30 - 18:00", text: "<span class='red-task'>關鍵：完成至少 1/3 週末功課</span>" },
-            { time: "20:15 - 21:00", text: "<span class='red-task'>重點：溫習最少半課書</span>" },
-            { time: "22:30 熄燈", text: "週末彈性入睡時間" },
-            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
-        ]},
-        saturday: { weights: [20, 20, 20, 20, 20], list: [
-            { time: "09:00 - 10:30", text: "<b>日文班</b>" },
-            { time: "11:30 - 12:30", text: "<span class='red-task'>核心：清空所有剩餘功課</span>" },
-            { time: "14:00 - 15:30", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
-            { time: "18:00 - 19:00", text: "<b>羽毛球班</b>" },
-            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
-        ]},
-        sunday: { weights: [20, 30, 20, 15, 15], list: [
-            { time: "09:00 - 10:00", text: "<b>準時起床 + 早餐</b>" },
-            { time: "10:30 - 12:00", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
-            { time: "16:30 - 17:30", text: "<b>檢查書包、功課與校服</b>" },
-            { time: "21:30 熄燈", text: "準時入睡" },
-            { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
-        ]}
-    };
-
+    let historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
+    
     let currentMode = "";
     let isLocked = false;
-    let historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
-
+    
     const d = new Date();
     const todayStr = d.toISOString().split('T')[0];
 
-    document.getElementById('dateText').innerText = d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    // ==================== ALL TASKS RESTORED ====================
+    const tasks = {
+        mon_thu: { 
+            weights: [20, 30, 20, 15, 15], 
+            list: [
+                { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+                { time: "17:30 - 19:00", text: "<b>第一階段：</b>全力完成作業" },
+                { time: "20:15 - 21:00", text: "<b>第二階段：</b>溫習與預習" },
+                { time: "21:30 熄燈", text: "放下手機，準時入睡" },
+                { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+            ]
+        },
+        tue: { 
+            weights: [25, 30, 15, 15, 15], 
+            list: [
+                { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+                { time: "18:00 - 19:00", text: "<b>回家功課：</b>集中精神完成" },
+                { time: "20:00 - 20:30", text: "<b>檢查功課及整理書包</b>" },
+                { time: "21:30 熄燈", text: "準時入睡" },
+                { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+            ]
+        },
+        wed: { 
+            weights: [20, 30, 20, 15, 15], 
+            list: [
+                { time: "05:00 - 06:15", text: "準時起床 + 晨間高效溫習" },
+                { time: "17:40 - 19:00", text: "<b>數研班：</b>專注邏輯訓練" },
+                { time: "20:00 - 21:00", text: "<b>高效功課：</b>精簡時間完成作業" },
+                { time: "21:30 熄燈", text: "準時入睡" },
+                { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+            ]
+        },
+        friday: { 
+            weights: [20, 25, 25, 15, 15], 
+            list: [
+                { time: "05:00 - 06:15", text: "晨間高效溫習" },
+                { time: "16:30 - 18:00", text: "<span class='red-task'>關鍵：完成至少 1/3 週末功課</span>" },
+                { time: "20:15 - 21:00", text: "<span class='red-task'>重點：溫習最少半課書</span>" },
+                { time: "22:30 熄燈", text: "週末彈性入睡時間" },
+                { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+            ]
+        },
+        saturday: { 
+            weights: [20, 20, 20, 20, 20], 
+            list: [
+                { time: "09:00 - 10:30", text: "<b>日文班</b>" },
+                { time: "11:30 - 12:30", text: "<span class='red-task'>核心：清空所有剩餘功課</span>" },
+                { time: "14:00 - 15:30", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
+                { time: "18:00 - 19:00", text: "<b>羽毛球班</b>" },
+                { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+            ]
+        },
+        sunday: { 
+            weights: [20, 30, 20, 15, 15], 
+            list: [
+                { time: "09:00 - 10:00", text: "<b>準時起床 + 早餐</b>" },
+                { time: "10:30 - 12:00", text: "<span class='red-task'>專注：溫習最少半課書 (或補習)</span>" },
+                { time: "16:30 - 17:30", text: "<b>檢查書包、功課與校服</b>" },
+                { time: "21:30 熄燈", text: "準時入睡" },
+                { time: "常規", text: "<span class='family-task'>對家人保持禮貌與情緒自控</span>" }
+            ]
+        }
+    };
 
-    // Cloud Sync
-    async function loadFromCloud() {
-        try {
-            const res = await fetch(`${WORKER_URL}/api/load`);
-            if (res.ok) {
-                const json = await res.json();
-                if (json.success && json.historyData) historyData = json.historyData;
-            }
-        } catch (e) {}
-        historyData = JSON.parse(localStorage.getItem('shineHistory') || '{}');
-    }
+    document.getElementById('dateText').innerText = 
+        d.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
 
-    async function saveToCloud() {
-        try {
-            await fetch(`${WORKER_URL}/api/save`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ historyData })
-            });
-        } catch (e) {}
+    function isToday() {
+        return true; // We are always showing today's tasks for child, but we'll control editing
     }
 
     function init() {
         const day = d.getDay();
-        let todayModeId = "";
-        if (day === 0) todayModeId = 'sunday';
-        else if (day === 1 || day === 4) todayModeId = 'mon_thu';
+        let todayModeId = 'sunday';
+        if (day === 1 || day === 4) todayModeId = 'mon_thu';
         else if (day === 2) todayModeId = 'tue';
         else if (day === 3) todayModeId = 'wed';
         else if (day === 5) todayModeId = 'friday';
@@ -225,22 +340,29 @@
         const listEl = document.getElementById('taskList');
         listEl.innerHTML = "";
 
-        const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(btn => {
-            btn.classList.remove('active');
-            btn.disabled = isLocked;
-            if (btn.id === 'btn-' + mode) btn.classList.add('active');
+        // Activate correct tab
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.id === 'btn-' + mode);
         });
 
         const taskData = tasks[mode].list;
         const weightData = tasks[mode].weights;
 
+        const canEditToday = !isLocked || isParentMode;
+
+        // Show restriction notice only when child tries to edit non-today (but we force today for now)
+        document.getElementById('restrictionNotice').style.display = 
+            (isParentMode || canEditToday) ? 'none' : 'block';
+
         taskData.forEach((task, index) => {
             const w = weightData[index] || 0;
             const div = document.createElement('div');
-            div.className = 'task-item';
+            div.className = `task-item ${canEditToday ? '' : 'disabled'}`;
+            
             div.innerHTML = `
-                <input type="checkbox" onchange="calc()" ${isLocked ? 'disabled' : ''}>
+                <input type="checkbox" 
+                       onchange="calc()" 
+                       ${!canEditToday ? 'disabled' : ''}>
                 <div class="info-pill"><span class="time-range">${task.time}</span></div>
                 <span class="task-text">${task.text} <span class="weight-text">(${w}%)</span></span>
             `;
@@ -248,8 +370,9 @@
         });
 
         const gBtn = document.getElementById('genBtn');
-        gBtn.disabled = isLocked;
-        gBtn.innerText = isLocked ? "今日報告已完成封存" : "💫 生成今日星光報告";
+        gBtn.disabled = isLocked && !isParentMode;
+        gBtn.innerText = (isLocked && !isParentMode) ? "今日報告已完成封存" : "💫 生成今日星光報告";
+
         calc();
     }
 
@@ -257,31 +380,32 @@
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const weights = tasks[currentMode].weights;
         let score = 0;
-        checkboxes.forEach((b, index) => { if (b.checked) score += (weights[index] || 0); });
-
+        checkboxes.forEach((b, index) => {
+            if (b.checked) score += (weights[index] || 0);
+        });
+        
         document.getElementById('num').innerText = score + '%';
         const bar = document.getElementById('bar');
         bar.style.width = Math.min(score, 100) + '%';
 
         const pBox = document.getElementById('pBox');
         if (score >= 100) {
-            pBox.className = "progress-box complete"; 
+            pBox.className = "progress-box complete";
             bar.className = "complete";
             document.getElementById('msg').innerText = "完美達成！今天妳是最耀眼的女孩！💖";
         } else {
-            pBox.className = "progress-box"; 
+            pBox.className = "progress-box";
             bar.className = "";
             document.getElementById('msg').innerText = score >= 80 ? "妳正在閃閃發光唷！✨" : "讓星光再亮一點點吧 🌙";
         }
     }
 
     async function gen() {
-        if(confirm("確定生成報告嗎？生成後今日將鎖定。")) {
+        if (confirm("確定生成報告嗎？生成後今日將鎖定。")) {
             const score = parseInt(document.getElementById('num').innerText);
             historyData[todayStr] = score;
             localStorage.setItem('shineHistory', JSON.stringify(historyData));
             isLocked = true;
-
             await saveToCloud();
             renderTasks(currentMode);
             renderCalendar();
@@ -291,9 +415,10 @@
 
     function parentUnlock() {
         if (prompt("請輸入家長管理密碼：") === PARENT_PIN) {
+            isParentMode = true;
             isLocked = false;
             document.getElementById('parentReviewBtn').style.display = 'block';
-            alert("家長模式已開啟\n點擊「家長審核模式」後，可點擊或長按日曆日期");
+            alert("✅ 家長模式已開啟\n現在可以修改任何日期的任务");
             renderTasks(currentMode);
         }
     }
@@ -305,11 +430,8 @@
     }
 
     function toggleParentApproval(dateKey) {
-        if (parentApproved[dateKey]) {
-            delete parentApproved[dateKey];
-        } else {
-            parentApproved[dateKey] = true;
-        }
+        if (parentApproved[dateKey]) delete parentApproved[dateKey];
+        else parentApproved[dateKey] = true;
         localStorage.setItem('parentApproved', JSON.stringify(parentApproved));
         renderCalendar();
         updateMonthCount();
@@ -318,17 +440,13 @@
 
     function deleteDayRecord(dateKey) {
         if (!confirm(`確定要刪除 ${dateKey} 的所有記錄嗎？此操作無法復原。`)) return;
-
         delete historyData[dateKey];
         delete parentApproved[dateKey];
-
         localStorage.setItem('shineHistory', JSON.stringify(historyData));
         localStorage.setItem('parentApproved', JSON.stringify(parentApproved));
-
         saveToCloud();
         renderCalendar();
         updateMonthCount();
-
         alert(`已刪除 ${dateKey} 的記錄`);
     }
 
@@ -351,13 +469,11 @@
             const cell = document.createElement('div');
             cell.className = 'cal-cell active';
             const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-
+            
             if(dateKey === todayStr) cell.classList.add('today');
 
             const childScore = historyData[dateKey] || 0;
             const isParentApproved = !!parentApproved[dateKey];
-
-            let percentHtml = childScore > 0 ? `<span class="cal-percent">${childScore}%</span>` : "";
 
             if (isParentApproved) {
                 cell.classList.add('lv-high', 'parent-approved');
@@ -369,20 +485,18 @@
                 cell.classList.add('lv-low');
             }
 
+            let percentHtml = childScore > 0 ? `<span class="cal-percent">${childScore}%</span>` : "";
             cell.innerHTML = `<span>${day}</span>${percentHtml}`;
 
             if (isReviewMode) {
                 cell.style.cursor = "pointer";
                 cell.onclick = () => toggleParentApproval(dateKey);
-                // Long press to delete
+                
                 let pressTimer;
-                cell.addEventListener('mousedown', () => {
-                    pressTimer = setTimeout(() => deleteDayRecord(dateKey), 700);
-                });
+                cell.addEventListener('mousedown', () => { pressTimer = setTimeout(() => deleteDayRecord(dateKey), 700); });
                 cell.addEventListener('mouseup', () => clearTimeout(pressTimer));
                 cell.addEventListener('mouseleave', () => clearTimeout(pressTimer));
             }
-
             grid.appendChild(cell);
         }
     }
@@ -393,19 +507,48 @@
         let count = 0;
         for (const dateKey in parentApproved) {
             const [year, month] = dateKey.split('-').map(Number);
-            if (year === currentYear && month === currentMonth) {
-                count++;
-            }
+            if (year === currentYear && month === currentMonth) count++;
         }
         document.getElementById('monthCount').innerText = count;
     }
 
-    async function startApp() {
-        await loadFromCloud();
-        init();
+    async function loadFromCloud() {
+        try {
+            const res = await fetch(`${WORKER_URL}/api/load`);
+            if (res.ok) {
+                const json = await res.json();
+                if (json.success) {
+                    if (json.historyData) historyData = json.historyData;
+                    if (json.parentApproved) parentApproved = json.parentApproved;
+                }
+            }
+        } catch (e) {}
     }
 
-    startApp();
+    async function saveToCloud() {
+        try {
+            await fetch(`${WORKER_URL}/api/save`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ historyData, parentApproved })
+            });
+        } catch (e) {}
+    }
+
+    function buildTabs() {
+        const tabsContainer = document.getElementById('modeTabs');
+        tabsContainer.innerHTML = `
+            <button class="tab-btn" id="btn-mon_thu" onclick="renderTasks('mon_thu')">週一/四</button>
+            <button class="tab-btn" id="btn-tue" onclick="renderTasks('tue')">週二</button>
+            <button class="tab-btn" id="btn-wed" onclick="renderTasks('wed')">週三(數研)</button>
+            <button class="tab-btn" id="btn-friday" onclick="renderTasks('friday')">週五</button>
+            <button class="tab-btn" id="btn-saturday" onclick="renderTasks('saturday')">週六</button>
+            <button class="tab-btn" id="btn-sunday" onclick="renderTasks('sunday')">週日</button>
+        `;
+    }
+
+    buildTabs();
+    loadFromCloud().then(() => init());
 </script>
 </body>
 </html>
